@@ -19,6 +19,7 @@ export class UserService {
 		const user = await this.prisma.user.findUnique({
 			where: { email }
 		})
+		return user
 	}
 
 	async create(dto: AuthDto) {
@@ -29,6 +30,6 @@ export class UserService {
 				password: await hash(dto.password),
 			}
 		})
-
+		return user
 	}
 }
