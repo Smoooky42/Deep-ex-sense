@@ -15,7 +15,7 @@ export class AuthService {
 	constructor(private jwt: JwtService,
 				private userService: UserService,
 				private prisma: PrismaService,
-				private configSevise: ConfigService) {}
+				private configSevice: ConfigService) {}
 
 	async login(dto: AuthDto) {
 		const user = await this.validateUser(dto)
@@ -39,6 +39,8 @@ export class AuthService {
 		if (!result) throw new UnauthorizedException('Невалидный refresh токен')
 
 		const user = await this.userService.getById(result.id)
+		if (!user) throw new NotFoundException(`User ${result.id} not found`)
+
 		const tokens = this.issueTokens(user.id)
 
 		return {user, ...tokens}
@@ -88,7 +90,7 @@ export class AuthService {
 
 		res.cookie(this.REFRESH_TOKEN_NAME, refreshToken, {
 			httpOnly: true,
-			domain: this.configSevise.get('SERVER_DOMAIN'),
+			domain: this.configSevice.get('SERVER_DOMAIN'),
 			expires: expiresIn,
 			secure: true,
 			sameSite: 'none'
@@ -98,7 +100,7 @@ export class AuthService {
 	removeRefreshTokenFromResponse(res: Response) {
 		res.cookie(this.REFRESH_TOKEN_NAME,'', {
 			httpOnly: true,
-			domain: this.configSevise.get('SERVER_DOMAIN'),
+			domain: this.configSevice.get('SERVER_DOMAIN'),
 			expires: new Date(0),
 			secure: true,
 			sameSite: 'none'
