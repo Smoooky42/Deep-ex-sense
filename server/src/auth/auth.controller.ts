@@ -29,6 +29,8 @@ export class AuthController {
     const {refreshToken, ...response} = await this.authService.login(dto)
 
     this.authService.addRefreshTokenToResponse(res, refreshToken)
+
+    return response
   }
 
   @UsePipes(new ValidationPipe())
@@ -41,29 +43,32 @@ export class AuthController {
     const {refreshToken, ...response} = await this.authService.register(dto)
 
     this.authService.addRefreshTokenToResponse(res, refreshToken)
+
+    return response
   }
 
-  @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Post('login/refresh')
+  @Get('refresh')
   async getNewTokens(
       @Req() req: Request,
       @Res({passthrough: true}) res: Response
   ) {
     const refreshTokenFromCookies = req.cookies[this.authService.REFRESH_TOKEN_NAME]
 
-    if (refreshTokenFromCookies) {
+    if (!refreshTokenFromCookies) {
       this.authService.removeRefreshTokenFromResponse(res)
       throw new UnauthorizedException('Refresh токен отсутствует')
     }
 
-    const tokens = await this.authService.getNewTokens(refreshTokenFromCookies)
+    const { refreshToken, ...response } = await this.authService.getNewTokens(refreshTokenFromCookies)
 
-    this.authService.addRefreshTokenToResponse(res, tokens.refreshToken)
+    this.authService.addRefreshTokenToResponse(res, refreshToken)
+
+    return response
   }
 
   @HttpCode(200)
-  @Post('logout')
+  @Get('logout')
   async logout(
       @Res({passthrough: true}) res: Response
   ) {
