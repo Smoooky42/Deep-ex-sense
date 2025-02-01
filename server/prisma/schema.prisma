@@ -14,9 +14,169 @@ model User {
 
   email    String  @unique
   password String?
+  name     String  @default("Не указано")
+  picture  String  @default("/uploads/default-user-image.png")
+  role     String  @default("USER")
 
-  name    String @default("Не указано")
-  picture String @default("/uploads/no-user-image.png")
+  orders Order[]
+  basket Basket?
+  rating Rating[]
 
   @@map("user")
+}
+
+model Basket {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updatad_at")
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @unique @map("user_id")
+
+  products BasketsOnProducts[]
+
+  @@map("basket")
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updatad_at")
+
+  name        String
+  description String?
+  price       Int
+  images      String[]
+
+  baskets     BasketsOnProducts[]
+  orderItems  OrderItem[]
+  productInfo ProductInfo[]
+  rating      Rating[]
+
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?   @map("category_id")
+
+  @@map("product")
+}
+
+model BasketsOnProducts {
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updatad_at")
+
+  Basket    Basket  @relation(fields: [basketId], references: [id])
+  basketId  String  @map("basket_id")
+  Product   Product @relation(fields: [productId], references: [id])
+  productId String  @map("product_id")
+
+  @@id([basketId, productId])
+  @@map("baskets_on_products")
+}
+
+model ProductInfo {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  title       String
+  description String
+
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+
+  @@map("product_info")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String
+
+  products Product[]
+
+  @@map("category")
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  rating Int
+
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @map("user_id")
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+
+  @@map("rating")
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  status EnumOrderStatus @default(PENDING)
+
+  orderItem OrderItem[]
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  @@map("order")
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  quantity Int
+  price    Int
+
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?  @map("product_id")
+  Order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   String?  @map("order_id")
+
+  @@map("order_item")
+}
+
+model Track {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updatad_at")
+
+  name    String  @default("Не указано")
+  artist  String  @default("Deep-ex-sense")
+  text    String?
+  listens Int     @default(0)
+  picture String  @default("/uploads/default-track-image.png")
+  audio   String
+
+  Album   Album?  @relation(fields: [albumId], references: [id])
+  albumId String? @map("album_id")
+
+  @@map("track")
+}
+
+model Album {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updatad_at")
+
+  name    String @default("Не указано")
+  artist  String @default("Deep-ex-sense")
+  picture String @default("/uploads/default-album-image.png")
+
+  tracks Track[]
+
+  @@map("album")
+}
+
+enum EnumOrderStatus {
+  PENDING
+  PAYED
 }
