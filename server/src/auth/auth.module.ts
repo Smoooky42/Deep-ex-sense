@@ -11,14 +11,16 @@ import { UserService } from '../user/user.service'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { GoogleStrategy } from './strategies/google.strategy'
 import { YandexStrategy } from './strategies/yandex.strategy'
+import { BasketModule } from '../basket/basket.module'
+import { BasketService } from '../basket/basket.service'
 
 @Module({
-  imports: [UserModule, ConfigModule, JwtModule.registerAsync({
+  imports: [UserModule, ConfigModule,BasketModule, JwtModule.registerAsync({
     imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: getJwtConfig
   })],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, UserService, JwtStrategy, GoogleStrategy, YandexStrategy],
+  providers: [AuthService, PrismaService, UserService, BasketService, JwtStrategy, GoogleStrategy, YandexStrategy],
 })
 export class AuthModule {}

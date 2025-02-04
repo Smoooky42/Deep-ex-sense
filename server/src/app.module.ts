@@ -6,6 +6,10 @@ import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { path } from 'app-root-path'
 import { TrackModule } from './track/track.module';
+import { BasketModule } from './basket/basket.module';
+import { ProductModule } from './product/product.module';
+import { CategoryModule } from './category/category.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -14,7 +18,7 @@ import { TrackModule } from './track/track.module';
       rootPath: `${path}/uploads`,
       serveRoot: `/uploads`
     }),
-    AuthModule, UserModule, FileModule, TrackModule],
+    AuthModule, UserModule, FileModule, TrackModule, BasketModule, ProductModule, CategoryModule, OrderModule],
   controllers: [],
   providers: [],
 })

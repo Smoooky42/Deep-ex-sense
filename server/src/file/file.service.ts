@@ -6,45 +6,38 @@ enum FileType {
 	AUDIO = 'audio',
 	IMAGE = 'image'
 }
-export interface FileResponse {
-	url: string;
-	name: string;
-}
 
 @Injectable()
 export class FileService {
 	async saveFiles(files: Express.Multer.File[],
 					// type: FileType,
-					folder: string ): Promise<FileResponse[]> {
+					folder: string = 'products' ): Promise<string[]> {
 		try {
 			const uploadedFolder = `${path}/uploads/${folder}`
 			await ensureDir(uploadedFolder)
 
-			const response: FileResponse[] = await Promise.all(
+			const filePaths: string[] = await Promise.all(
 				files.map(async file => {
 					const originalName = `${Date.now()}-${file.originalname}`
 					// const fileExtension = file.originalname.split('.').pop() //разрешение файла
 					// const fileName = uuid.v4() + '.' + fileExtension
 
 					await writeFile(`${uploadedFolder}/${originalName}`, file.buffer)
-
-					return {
-						url:	 `${uploadedFolder}/${originalName}`,
-						name: originalName
-					}
+					return `/uploads/${folder}/${originalName}`
 				})
 			)
-
-			return response
+			return filePaths
 		} catch (e) {
 			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
 
-	async deleteFiles(filePath: string): Promise<boolean>{
+	async deleteFiles(filePaths: string[]): Promise<string[]>{
 		try {
-			await rm(filePath)
-			return true
+			filePaths.map(
+				async(filePath: string)=> await rm(filePath))
+
+			return filePaths
 		} catch(e){
 			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
 		}

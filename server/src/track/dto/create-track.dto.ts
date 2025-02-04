@@ -12,4 +12,12 @@ export class CreateTrackDto {
 
     @IsString({ message: 'Please enter a valid name' })
     readonly text?: string
+
+    @IsString({ message: 'Укажите хотя бы одну картинку'})
+    @IsNotEmpty({ each: true, message: 'Путь к картинке не может быть пустым' })
+    picture: string
+
+    @IsString({ message: 'Укажите хотя бы одну картинку'})
+    @IsNotEmpty({ each: true, message: 'Путь к картинке не может быть пустым' })
+    audio: string
 }

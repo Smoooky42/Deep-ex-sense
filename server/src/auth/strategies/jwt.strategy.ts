@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
@@ -18,11 +18,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		})
 	}
 
-	async validate({id}:{id:string}) {
-		try {
-			return this.userService.getById(id)
-		} catch(e){
-			throw new HttpException('Токен валидный, но пользователя нет в БД', 500)
-		}
+	async validate(userData: {id: string}) {
+
+		return this.userService.getById(userData.id)
+
+		// const req = context.switchToHttp().getRequest() //Можно только в canActive. В passport ответ автоматически вставляется в req.user
+		// req.user.id = userData.id
+		// return true
 	}
 }

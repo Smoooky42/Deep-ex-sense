@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma.service'
 import { AuthDto } from '../auth/dto/auth.dto'
 import {User} from '@prisma/client'
 
+
 @Injectable()
 export class UserService {
 	constructor(private readonly prisma: PrismaService) {}
@@ -22,15 +23,34 @@ export class UserService {
 
 	async getById(id: string): Promise<User> {
 		const user: User = await this.prisma.user.findUnique({
-			where: { id }
+			where: { id },
+			include: {
+				orders: true,
+				basket: true
+			}
 		})
 		return user
 	}
 
 	async getByEmail(email: string): Promise<User> {
 		const user: User = await this.prisma.user.findUnique({
-			where: { email }
+			where: { email },
+			include: {
+				orders: true,
+				basket: true
+			}
 		})
 		return user
+	}
+
+	async getAll(): Promise<User[]> {
+		const users: User[] = await this.prisma.user.findMany({
+			include: {
+				orders: true,
+				basket: true
+			}
+		})
+
+		return users
 	}
 }

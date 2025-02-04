@@ -9,11 +9,12 @@ import {
   UsePipes,
   ValidationPipe
 } from '@nestjs/common'
-import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto'
 import { Request, Response } from 'express'
 import { AuthGuard } from '@nestjs/passport'
 import * as process from 'node:process'
+
+import { AuthDto } from './dto/auth.dto'
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {

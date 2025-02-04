@@ -4,16 +4,17 @@ import {
   Delete,
   Get,
   HttpCode,
-  Param,
-  Post, Put,
+  Param, Patch,
+  Post,
   Query,
-  UploadedFiles,
-  UseInterceptors, UsePipes, ValidationPipe
+  UsePipes, ValidationPipe
 } from '@nestjs/common'
+
 import { TrackService } from './track.service';
-import { FileFieldsInterceptor } from '@nestjs/platform-express'
 import { Auth } from '../auth/decorators/auth.decorator'
 import { CreateTrackDto } from './dto/create-track.dto'
+import { UpdateTrackDto } from './dto/update-track.dto'
+import { Track } from '@prisma/client'
 
 @Controller('track')
 export class TrackController {
@@ -22,37 +23,28 @@ export class TrackController {
   @HttpCode(200)
   @UsePipes(new ValidationPipe())
   @Auth()
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'picture', maxCount: 1 },
-    { name: 'audio', maxCount: 1 },
-  ]))
   @Post()
-  create(@Body() dto: CreateTrackDto,
-         @UploadedFiles() files: any,
-         @Query('folder') folder?: string
-         ) {
-    const {picture, audio}: {picture: Express.Multer.File[], audio: Express.Multer.File[]} = files
-    return this.trackService.create(dto, picture, audio, folder);
+  create(@Body() dto: CreateTrackDto): Promise<Track> {
+    return this.trackService.create(dto);
+  }
+
+  @HttpCode(200)
+  @Get()
+  findAll(@Query('count') count: number,
+          @Query('offset') offset: number) {
+    return this.trackService.getAll(count, offset)
+  }
+
+  @HttpCode(200)
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.trackService.getOne(id);
   }
 
   @HttpCode(200)
   @Get('/search')
   search(@Query('query') query: string) {
-    console.log(query)
     return this.trackService.search(query)
-  }
-
-  @HttpCode(200)
-  @Get(':id')
-  getOne(@Param('id') id: string) {
-    return this.trackService.getOne(id);
-  }
-
-  @HttpCode(200)
-  @Get()
-  getAll(@Query('count') count: number,
-         @Query('offset') offset: number) {
-    return this.trackService.getAll(count, offset)
   }
 
   @HttpCode(200)
@@ -71,18 +63,10 @@ export class TrackController {
   @HttpCode(200)
   @UsePipes(new ValidationPipe())
   @Auth()
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'picture', maxCount: 1 },
-    { name: 'audio', maxCount: 1 },
-  ]))
-
-  @Put(':id')
-  update(@Body() dto: CreateTrackDto,
+  @Patch(':id')
+  update(@Body() dto: UpdateTrackDto,
          @Param('id') id: string,
-         @UploadedFiles() files: any,
-         @Query('folder') folder?: string
-  ) {
-    const {picture, audio}: {picture: Express.Multer.File[], audio: Express.Multer.File[]} = files
-    return this.trackService.update(id, dto, picture, audio, folder);
+  ): Promise<Track> {
+    return this.trackService.update(id, dto);
   }
 }

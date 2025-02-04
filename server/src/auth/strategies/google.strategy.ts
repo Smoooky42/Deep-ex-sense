@@ -30,6 +30,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 			picture: photos[0].value,
 		}
 
-		done(null, user)
+		done(null, user)	//user передается в controller внутри req
 	}
 }

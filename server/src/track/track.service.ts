@@ -1,30 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+
 import { PrismaService } from '../prisma.service'
 import { CreateTrackDto } from './dto/create-track.dto'
-import { FileService } from '../file/file.service'
-import { FileResponse } from '../file/file.service'
 import {Track} from '@prisma/client'
+import { UpdateTrackDto } from './dto/update-track.dto'
 
 @Injectable()
 export class TrackService {
 
-	constructor(private readonly prisma: PrismaService,
-				private readonly fileService: FileService) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-	async create (dto: CreateTrackDto,
-				 picture: Express.Multer.File[],
-				 audio: Express.Multer.File[],
-				 folder: string): Promise<Track> {
-		const audioPath: FileResponse[] = await this.fileService.saveFiles(audio, folder = 'track/audio')
-		const picturePath: FileResponse[] = await this.fileService.saveFiles(picture, folder = 'track/picture')
+	async create (dto: CreateTrackDto): Promise<Track> {
 		const track: Track = await this.prisma.track.create({
 			data: {
 				name: dto.name,
 				artist: dto.artist,
-				text: dto.text,	//можно было просто dto
-				listens: 0,
-				picture: picturePath[0].url,
-				audio: audioPath[0].url,
+				text: dto.text,
+				picture: dto.picture,
+				audio: dto.audio,	//можно было просто ...dto
+				listens: 0
 			}
 		})
 		return track
@@ -95,35 +89,16 @@ export class TrackService {
 		return tracks;
 	}
 
-	async update(id: string,
-				 dto: CreateTrackDto,
-				 picture: Express.Multer.File[],
-				 audio: Express.Multer.File[],
-				 folder: string): Promise<Track> {
-		const track: Track = await this.prisma.track.findUnique({
+	async update(id: string, dto: UpdateTrackDto): Promise<Track> {
+		const track: Track = await this.prisma.track.update({
 			where: {
 				id,
-			}
-		})
-		 const oldPicture = track.picture
-		const oldAudio = track.audio
-
-		await this.fileService.deleteFiles(oldPicture)
-		await this.fileService.deleteFiles(oldAudio)
-
-		const audioPath: FileResponse[] = await this.fileService.saveFiles(audio, folder = 'track/audio')
-		const picturePath: FileResponse[] = await this.fileService.saveFiles(picture, folder = 'track/picture')
-
-		const Newtrack: Track = await this.prisma.track.update({
-			where: {
-				id
 			},
 			data: {
-				...dto,
-				picture: picturePath[0].url,
-				audio: audioPath[0].url,
+				...dto
 			}
 		})
-		return Newtrack
+
+		return track
 	}
 }
