@@ -7,12 +7,11 @@ import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module'
 import { getJwtConfig } from '../config/jwt.config'
 import { PrismaService } from '../prisma.service'
-import { UserService } from '../user/user.service'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { GoogleStrategy } from './strategies/google.strategy'
 import { YandexStrategy } from './strategies/yandex.strategy'
 import { BasketModule } from '../basket/basket.module'
-import { BasketService } from '../basket/basket.service'
+
 
 @Module({
   imports: [UserModule, ConfigModule,BasketModule, JwtModule.registerAsync({
@@ -21,6 +20,6 @@ import { BasketService } from '../basket/basket.service'
     useFactory: getJwtConfig
   })],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, UserService, BasketService, JwtStrategy, GoogleStrategy, YandexStrategy],
+  providers: [AuthService, PrismaService, JwtStrategy, GoogleStrategy, YandexStrategy],
 })
 export class AuthModule {}

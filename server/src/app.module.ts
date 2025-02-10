@@ -10,6 +10,7 @@ import { BasketModule } from './basket/basket.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { OrderModule } from './order/order.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { OrderModule } from './order/order.module';
       rootPath: `${path}/uploads`,
       serveRoot: `/uploads`
     }),
-    AuthModule, UserModule, FileModule, TrackModule, BasketModule, ProductModule, CategoryModule, OrderModule],
+    AuthModule, UserModule, FileModule, TrackModule, BasketModule, ProductModule, CategoryModule, OrderModule, RolesModule],
   controllers: [],
   providers: [],
 })

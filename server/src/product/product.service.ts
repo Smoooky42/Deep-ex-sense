@@ -12,7 +12,7 @@ export class ProductService {
   constructor(private readonly prisma: PrismaService) {
   }
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto): Promise<Product> {
     const product: Product = await this.prisma.product.create({
       data: {
         name : createProductDto.name,
@@ -28,7 +28,7 @@ export class ProductService {
     return product
   }
 
-  async findAll() {
+  async findAll(): Promise<Product[]> {
     const products: Product[] = await this.prisma.product.findMany({
       include: {
         Category: true,
@@ -38,7 +38,7 @@ export class ProductService {
     return products
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Product> {
     const product: Product = await this.prisma.product.findUnique({
       where: {
         id
@@ -52,7 +52,7 @@ export class ProductService {
     return product
   }
 
-  async search(searchTerm: string) {
+  async search(searchTerm: string): Promise<Product[]> {
     return this.prisma.product.findMany({
       where: {
         OR: [
@@ -77,8 +77,8 @@ export class ProductService {
     })
   }
 
-  async findByCategory(categoryId: string) {
-    const products = await this.prisma.product.findMany({
+  async findByCategory(categoryId: string): Promise<Product[]> {
+    const products: Product[] = await this.prisma.product.findMany({
       where: {
         Category: {
           id: categoryId
@@ -94,7 +94,7 @@ export class ProductService {
     return products
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
     const product: Product = await this.prisma.product.update({
       where: {id},
       data: {...updateProductDto}
@@ -102,7 +102,7 @@ export class ProductService {
     return product
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<boolean> {
     await this.prisma.product.delete({
       where: {
         id
@@ -111,23 +111,36 @@ export class ProductService {
     return true
   }
 
-  async createProductInfo(id: string, dto: CreateProductInfoDto) {
+  async createProductInfo(id: string, dto: CreateProductInfoDto): Promise<ProductInfo> {
     const productInfo: ProductInfo = await this.prisma.productInfo.create({
       data: {
         id: id,
         title: dto.title,
         description: dto.description,
-        productId: dto.productId,
+        Product: {
+          connect: {
+            id: dto.productId
+          }
+        },
       }
     })
     return productInfo
   }
 
-  async updateProductInfo(id: string, dto: UpdateProductInfoDto) {
+  async updateProductInfo(id: string, dto: UpdateProductInfoDto): Promise<ProductInfo> {
     const productInfo: ProductInfo = await this.prisma.productInfo.update({
       where: {id},
       data: { ...dto}
     })
     return productInfo
+  }
+
+  async removeProductInfo(id: string): Promise<any>{
+    await this.prisma.productInfo.delete({
+      where: {
+        id
+      }
+    })
+    return true
   }
 }

@@ -1,32 +1,56 @@
 import {
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-  UsePipes,
-  ValidationPipe
+    Body,
+    Controller,
+    HttpCode,
+    Post,
+    UsePipes,
+    ValidationPipe
 } from '@nestjs/common'
+import { ApiCreatedResponse, ApiOperation, ApiProperty } from '@nestjs/swagger'
+
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { CurrentUser } from 'src/user/decorators/user.decorator'
 import { OrderDto } from './dto/create-order.dto'
 import { PaymentStatusDto } from './dto/payment-status.dto'
 import { OrderService } from './order.service'
 
-@Controller('orders')
+
+class OrderResponse {
+    @ApiProperty()
+    amount: {
+        value: Number
+        currency: String
+    }
+    @ApiProperty()
+    payment_method_data: {
+        type: String
+    }
+    @ApiProperty()
+    confirmation: {
+        type: String
+        return_url: String
+    }
+    @ApiProperty()
+    description: String
+}
+
+@Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+    constructor(private readonly orderService: OrderService) {}
 
-  @UsePipes(new ValidationPipe())
-  @HttpCode(200)
-  @Post('place')
-  @Auth()
-  async checkout(@Body() dto: OrderDto, @CurrentUser('id') userId: string) {
-    return this.orderService.createPayment(dto, userId)
-  }
+    @ApiCreatedResponse({type: OrderResponse, description: 'Создание заказа'})
+    @UsePipes(new ValidationPipe())
+    @HttpCode(200)
+    @Post('create')
+    @Auth()
+    async checkout(@Body() dto: OrderDto, @CurrentUser('id') userId: string) {
+        return this.orderService.createPayment(dto, userId)
+    }
 
-  @HttpCode(200)
-  @Post('status')
-  async updateStatus(@Body() dto: PaymentStatusDto) {
-    return this.orderService.updateStatus(dto)
-  }
+    @ApiOperation({summary: 'Изменение статуса заказа'})
+    @HttpCode(200)
+    @Post('status')
+    async updateStatus(@Body() dto: PaymentStatusDto) {
+        return this.orderService.updateStatus(dto)
+    }
 }

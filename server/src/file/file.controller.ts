@@ -1,14 +1,19 @@
-import { Controller, HttpCode, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common'
 import { FileService } from './file.service'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { Auth } from '../auth/decorators/auth.decorator'
+import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { FileUploadDto } from './dto/file-upload.dto'
 
-@Controller('files')
+@Controller('file')
 export class FileController {
 	constructor(private readonly fileService: FileService) {}
 
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({ description: 'Массив файлов', type: FileUploadDto })
+	@ApiCreatedResponse({type: [String], description: 'Загрузка файлов'})
 	@HttpCode(200)
-	@UseInterceptors(FilesInterceptor('files'))
+	@UseInterceptors(FilesInterceptor('file'))
 	@Auth()
 	@Post()
 	saveFiles(
@@ -18,10 +23,12 @@ export class FileController {
 		return this.fileService.saveFiles(files, folder)
 	}
 
+	@ApiCreatedResponse({type: [String], description: 'Удаление файлов'})
+	@ApiBody({ type: [String] })
 	@HttpCode(200)
 	@Auth()
 	@Post()
-	deleteFiles(filePaths: string[]) {
+	deleteFiles(@Body() filePaths: string[]) {
 		return this.fileService.deleteFiles(filePaths)
 	}
 }

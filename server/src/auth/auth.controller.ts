@@ -12,21 +12,32 @@ import {
 import { Request, Response } from 'express'
 import { AuthGuard } from '@nestjs/passport'
 import * as process from 'node:process'
+import { ApiCreatedResponse, ApiOperation, ApiProperty } from '@nestjs/swagger'
 
 import { AuthDto } from './dto/auth.dto'
 import { AuthService } from './auth.service';
+import { User } from '@prisma/client'
+import { UserResponse } from '../user/user.controller'
+
+class authResponse {
+  @ApiProperty({type: UserResponse})
+  user: User
+  @ApiProperty()
+  accessToken: string
+}
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiCreatedResponse({type: authResponse, description: 'Авторизация'})
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('login')
   async login(
       @Body() dto: AuthDto,
       @Res({passthrough: true}) res: Response
-  ) {
+  ): Promise<authResponse> {
     const {refreshToken, ...response} = await this.authService.login(dto)
 
     this.authService.addRefreshTokenToResponse(res, refreshToken)
@@ -34,6 +45,7 @@ export class AuthController {
     return response
   }
 
+  @ApiCreatedResponse({type: authResponse, description: 'Регистрация пользователя'})
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('register')
@@ -48,6 +60,7 @@ export class AuthController {
     return response
   }
 
+  @ApiCreatedResponse({type: authResponse, description: 'Выдача новых токенов'})
   @HttpCode(200)
   @Get('refresh')
   async getNewTokens(
@@ -68,6 +81,7 @@ export class AuthController {
     return response
   }
 
+  @ApiCreatedResponse({type: Boolean, description: 'Выход'})
   @HttpCode(200)
   @Get('logout')
   async logout(
@@ -77,6 +91,7 @@ export class AuthController {
     return true
   }
 
+  @ApiOperation({summary: 'Авторизация Google'})
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() _req) {}
@@ -93,6 +108,7 @@ export class AuthController {
     return res.redirect(`${process.env['CLIENT_URL']}/dashboard?access_token=${response.accessToken}`)
   }
 
+  @ApiOperation({summary: 'Авторизация Yandex'})
   @Get('yandex')
   @UseGuards(AuthGuard('yandex'))
   async yandexAuth(@Req() _req) {}

@@ -1,13 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 
-import {BasketsOnProducts, Basket} from '@prisma/client'
+import {Basket} from '@prisma/client'
 
 @Injectable()
 export class BasketService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: string) {
+  async create(userId: string): Promise<Basket> {
     const basket: Basket = await this.prisma.basket.create({
       data: {
         userId
@@ -17,27 +17,18 @@ export class BasketService {
     return basket
   }
 
-  async getBasket(userId: string) {
+  async getBasket(userId: string): Promise<Basket> {
     const basket: Basket = await this.prisma.basket.findUnique({
       where: {
         userId
-      }
+      },
+      include: {products: true}
     })
 
     return basket
   }
 
-  async getAllProducts(userId: string){
-    const basket: Basket = await this.getBasket(userId)
-    const products: BasketsOnProducts[]  = await this.prisma.basketsOnProducts.findMany({
-      where: {
-        basketId: basket.id
-      }
-    })
-    return products
-  }
-
-  async addProductsInBasket(userId: string, productsId: string[]) {
+  async addProductsInBasket(userId: string, productsId: string[]): Promise<boolean> {
     const basket: Basket = await this.getBasket(userId)
 
     const products = await Promise.all(

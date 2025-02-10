@@ -6,5 +6,6 @@ import { PrismaService } from '../prisma.service'
 @Module({
   controllers: [TrackController],
   providers: [TrackService, PrismaService],
+  exports: [TrackService]
 })
 export class TrackModule {}

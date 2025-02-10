@@ -18,7 +18,7 @@ export class OrderService {
     const orderItems = dto.items.map(item => ({
       quantity: item.quantity,
       price: item.price,
-      product: {
+      Product: {
         connect: {
           id: item.productId
         }
@@ -56,7 +56,7 @@ export class OrderService {
         type: 'redirect',
         return_url: `${process.env.CLIENT_URL}/thanks`
       },
-      description: `Оплата заказа в магазине TeaShop. Id платежи: #${order.id}`
+      description: `Оплата заказа в магазине Deep-ex-sense. Id платежи: #${order.id}`
     })
 
     return payment

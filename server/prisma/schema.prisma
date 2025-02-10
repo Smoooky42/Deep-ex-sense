@@ -16,13 +16,38 @@ model User {
   password String?
   name     String  @default("Не указано")
   picture  String  @default("/uploads/default-user-image.png")
-  role     String  @default("USER")
 
   orders Order[]
   basket Basket?
   rating Rating[]
+  roles  UsersOnRoles[]
 
   @@map("user")
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updatad_at")
+
+  value       String  @unique @default("USER")
+  description String?
+
+  users UsersOnRoles[]
+
+  @@map("role")
+}
+
+model UsersOnRoles {
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updatad_at")
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  Role      Role     @relation(fields: [roleId], references: [id])
+  roleId    String   @map("role_id")
+
+  @@id([userId, roleId])
+  @@map("users_on_roles")
 }
 
 model Basket {
@@ -120,8 +145,8 @@ model Order {
 
   status EnumOrderStatus @default(PENDING)
 
-  orderItem OrderItem[]
   total     Int
+  orderItem OrderItem[]
 
   User   User?   @relation(fields: [userId], references: [id])
   userId String? @map("user_id")
@@ -150,7 +175,7 @@ model Track {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updatad_at")
 
-  name    String  @default("Не указано")
+  name    String
   artist  String  @default("Deep-ex-sense")
   text    String?
   listens Int     @default(0)
