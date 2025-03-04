@@ -111,10 +111,9 @@ export class ProductService {
     return true
   }
 
-  async createProductInfo(id: string, dto: CreateProductInfoDto): Promise<ProductInfo> {
+  async createProductInfo(dto: CreateProductInfoDto): Promise<ProductInfo> {
     const productInfo: ProductInfo = await this.prisma.productInfo.create({
       data: {
-        id: id,
         title: dto.title,
         description: dto.description,
         Product: {

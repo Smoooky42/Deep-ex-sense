@@ -16,7 +16,7 @@ import { UpdateProductDto } from './dto/update-product.dto'
 import { CreateProductInfoDto } from './dto/create-product-info.dto'
 import { UpdateProductInfoDto } from './dto/update-product-info.dto'
 import { Auth } from '../auth/decorators/auth.decorator'
-import { Roles } from '../auth/decorators/roles-auth.decorator'
+import { Roles } from '../auth/decorators/roles.decorator'
 import { RolesGuard } from '../auth/guards/roles.guard'
 import { Product, ProductInfo } from '@prisma/client'
 
@@ -58,39 +58,39 @@ export class ProductController {
   @Auth()
   @UsePipes(new ValidationPipe())
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  async create(@Body() createProductDto: CreateProductDto) {
+    return await this.productService.create(createProductDto);
   }
 
   @ApiCreatedResponse({type: [ProductResponse], description: 'Получение всех продуктов'})
   @HttpCode(200)
   @Auth()
-  @Roles("ADMIN")
-  @UseGuards(RolesGuard)
+  // @Roles("ADMIN")  //Если использую, то надо использовать JWTModule
+  //@UseGuards(RolesGuard)
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  async findAll() {
+    return await this.productService.findAll();
   }
 
   @ApiCreatedResponse({type: ProductResponse, description: 'Получение продукта по Id'})
   @HttpCode(200)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.productService.findOne(id);
   }
 
   @ApiCreatedResponse({type: [ProductResponse], description: 'Поиск продукта'})
   @HttpCode(200)
   @Get('/search')
-  search(@Query('query') query: string) {
-    return this.productService.search(query)
+  async search(@Query('query') query: string) {
+    return await this.productService.search(query)
   }
 
   @ApiCreatedResponse({type: [ProductResponse], description: 'Получение продуктов по категории'})
   @HttpCode(200)
   @Get('by-category/:categoryId')
-  findByCategory(@Param('categoryId') categoryId: string) {
-    return this.productService.findByCategory(categoryId)
+  async findByCategory(@Param('categoryId') categoryId: string) {
+    return await this.productService.findByCategory(categoryId)
   }
 
   @ApiCreatedResponse({type: ProductResponse, description: 'Обновление продукта'})
@@ -98,15 +98,15 @@ export class ProductController {
   @Auth()
   @UsePipes(new ValidationPipe())
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(id, updateProductDto);
+  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    return await this.productService.update(id, updateProductDto);
   }
 
   @ApiCreatedResponse({type: Boolean, description: 'Удаление продукта'})
   @HttpCode(200)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.productService.remove(id);
   }
 
   @ApiCreatedResponse({type: ProductInfoResponse, description: 'Создание информации о продукте'})
@@ -114,9 +114,8 @@ export class ProductController {
   @Auth()
   @UsePipes(new ValidationPipe())
   @Post('/productInfo/:id')
-  createProductsInfo(@Body() createProductInfoDto: CreateProductInfoDto,
-                     @Param('id') id: string) {
-    return this.productService.createProductInfo(id, createProductInfoDto)
+  async createProductsInfo(@Body() createProductInfoDto: CreateProductInfoDto) {
+    return await this.productService.createProductInfo(createProductInfoDto)
   }
 
   @ApiCreatedResponse({type: ProductInfoResponse, description: 'Обновление информации о продукте'})
@@ -124,17 +123,17 @@ export class ProductController {
   @Auth()
   @UsePipes(new ValidationPipe())
   @Patch('/productInfo/:id')
-  updateProductsInfo(@Body() updateProductInfoDto: UpdateProductInfoDto,
+  async updateProductsInfo(@Body() updateProductInfoDto: UpdateProductInfoDto,
                      @Param('id') id: string) {
-    return this.productService.updateProductInfo(id, updateProductInfoDto)
+    return await this.productService.updateProductInfo(id, updateProductInfoDto)
   }
 
   @ApiCreatedResponse({type: Boolean, description: 'Удаление информации о продукте'})
   @HttpCode(200)
   @Auth()
   @UsePipes(new ValidationPipe())
-  @Delete()
-  removeProductInfo(@Param('id') id: string) {
-    return this.productService.removeProductInfo(id)
+  @Delete('/productInfo/:id')
+  async removeProductInfo(@Param('id') id: string) {
+    return await this.productService.removeProductInfo(id)
   }
 }

@@ -31,16 +31,17 @@ export class BasketService {
   async addProductsInBasket(userId: string, productsId: string[]): Promise<boolean> {
     const basket: Basket = await this.getBasket(userId)
 
-    const products = await Promise.all(
-        productsId.map(async (productId: string) => {
-          this.prisma.basketsOnProducts.create({
+    const products = productsId.map(async (productId: string) => {
+          this.prisma.basket.update({
+            where: { id: basket.id },
             data: {
-              basketId: basket.id,
-              productId: productId,
+              products: {
+                connect: { id: productId } // Устанавливаем связь
+              }
             }
           })
         })
-    )
+
     if (!products) throw new HttpException('Product not found', 500)
 
     return true

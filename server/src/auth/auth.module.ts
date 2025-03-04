@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 
@@ -14,12 +14,22 @@ import { BasketModule } from '../basket/basket.module'
 
 
 @Module({
-  imports: [UserModule, ConfigModule,BasketModule, JwtModule.registerAsync({
-    imports: [ConfigModule],
-    inject: [ConfigService],
-    useFactory: getJwtConfig
-  })],
+  imports: [forwardRef(() => UserModule),
+    ConfigModule,BasketModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getJwtConfig
+    }),
+    // JwtModule.register({       //Второй вариант
+    //   secret: process.env.PRIVATE_KEY || 'SECRET',
+    //   signOptions: {
+    //     expiresIn: '24h'
+    //   }
+    // })
+  ],
   controllers: [AuthController],
   providers: [AuthService, PrismaService, JwtStrategy, GoogleStrategy, YandexStrategy],
+  exports: [JwtModule, AuthService]
 })
 export class AuthModule {}

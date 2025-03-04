@@ -9,12 +9,12 @@ import {
 import {Observable} from "rxjs";
 import {JwtService} from "@nestjs/jwt";
 import {Reflector} from "@nestjs/core";
-import {ROLES_KEY} from "../decorators/roles-auth.decorator";
+import {ROLES_KEY} from "../decorators/roles.decorator";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(
-                // private jwtService: JwtService,
+                private jwtService: JwtService,
                 private reflector: Reflector) {
     }
 
@@ -27,18 +27,19 @@ export class RolesGuard implements CanActivate {
             if (!requiredRoles) {
                 return true;
             }
-            const req = context.switchToHttp().getRequest(); //В @Auth() guard уже есть расшифрофка токена и помощение в request
-            // const authHeader = req.headers.authorization;
-            // const bearer = authHeader.split(' ')[0]
-            // const token = authHeader.split(' ')[1]
-            //
-            // if (bearer !== 'Bearer' || !token) {
-            //     throw new UnauthorizedException({message: 'Пользователь не авторизован'})
-            // }
-            //
-            // const user = this.jwtService.verify(token);
-            // req.user = user;
-            const user = req.user
+            const req = context.switchToHttp().getRequest(); //В @Auth() guard уже есть расшифрофка токена и помещение в request
+            const authHeader = req.headers.authorization;
+            const bearer = authHeader.split(' ')[0]
+            const token = authHeader.split(' ')[1]
+
+            if (bearer !== 'Bearer' || !token) {
+                throw new UnauthorizedException({message: 'Пользователь не авторизован'})
+            }
+
+            const user = this.jwtService.verify(token);
+            console.log(user)
+            req.user = user;
+
             return user.roles.some(role => requiredRoles.includes(role.value));
         } catch (e) {
             console.log(e)

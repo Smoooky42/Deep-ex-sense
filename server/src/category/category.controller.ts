@@ -27,22 +27,22 @@ export class CategoryController {
   @UsePipes(new ValidationPipe())
   @Auth()
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    return await this.categoryService.create(createCategoryDto);
   }
 
   @ApiCreatedResponse({type: CategoryResponse, description: 'Получение всех категорий'})
   @HttpCode(200)
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  async findAll() {
+    return await this.categoryService.findAll();
   }
 
   @ApiCreatedResponse({type: CategoryResponse, description: 'Получение категории по Id'})
   @HttpCode(200)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.categoryService.findOne(id);
   }
 
   @ApiCreatedResponse({type: CategoryResponse, description: 'Обновление категории'})
@@ -50,14 +50,14 @@ export class CategoryController {
   @UsePipes(new ValidationPipe())
   @Auth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(id, updateCategoryDto);
+  async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+    return await this.categoryService.update(id, updateCategoryDto);
   }
 
   @ApiCreatedResponse({type: Boolean, description: 'Удаление категории'})
   @HttpCode(200)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.categoryService.remove(id);
   }
 }

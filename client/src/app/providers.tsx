@@ -1,9 +1,9 @@
 'use client'
 
-import { type PropsWithChildren, useState } from 'react'
+import { type PropsWithChildren, useRef, useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { Provider } from 'react-redux'
-import { store } from "@/store/store"
+import { makeStore, AppStore } from "@/store/store"
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export function Providers({ children }: PropsWithChildren) {
@@ -17,9 +17,15 @@ export function Providers({ children }: PropsWithChildren) {
 	// 	})
 	// )
 
+	const storeRef = useRef<AppStore>(undefined)
+  if (!storeRef.current) {
+    // Create the store instance the first time this renders
+    storeRef.current = makeStore()
+  }
+
 	return (
 		// <QueryClientProvider client={client}>
-		<Provider store={store}>
+		<Provider store={storeRef.current}>
 			<Toaster />
 			{children}
 		</Provider>

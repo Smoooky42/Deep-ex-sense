@@ -25,25 +25,24 @@ export class RolesController {
 
   @ApiCreatedResponse({type: RoleResponse, description: 'Удаление информации о продукте'})
   @HttpCode(200)
-  @Auth()
   @UsePipes(new ValidationPipe())
   @Post()
-  create(@Body() createRoleDto: CreateRoleDto) {
-    return this.rolesService.create(createRoleDto);
+  async create(@Body() createRoleDto: CreateRoleDto) {
+    return await this.rolesService.create(createRoleDto);
   }
 
   @ApiCreatedResponse({type: [RoleResponse], description: 'Удаление информации о продукте'})
   @HttpCode(200)
   @Get()
-  findAll() {
-    return this.rolesService.findAll();
+  async findAll() {
+    return await this.rolesService.findAll();
   }
 
   @ApiCreatedResponse({type: Boolean, description: 'Удаление информации о продукте'})
   @HttpCode(200)
   @Auth()
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rolesService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.rolesService.remove(id);
   }
 }

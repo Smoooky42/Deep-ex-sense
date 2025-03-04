@@ -16,11 +16,11 @@ export class FileController {
 	@UseInterceptors(FilesInterceptor('file'))
 	@Auth()
 	@Post()
-	saveFiles(
+	async saveFiles(
 		@UploadedFiles() files: Express.Multer.File[],
 		@Query('folder') folder?: string
 	) {
-		return this.fileService.saveFiles(files, folder)
+		return await this.fileService.saveFiles(files, folder)
 	}
 
 	@ApiCreatedResponse({type: [String], description: 'Удаление файлов'})
@@ -28,7 +28,7 @@ export class FileController {
 	@HttpCode(200)
 	@Auth()
 	@Post()
-	deleteFiles(@Body() filePaths: string[]) {
-		return this.fileService.deleteFiles(filePaths)
+	async deleteFiles(@Body() filePaths: string[]) {
+		return await this.fileService.deleteFiles(filePaths)
 	}
 }

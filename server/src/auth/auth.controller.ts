@@ -36,9 +36,10 @@ export class AuthController {
   @Post('login')
   async login(
       @Body() dto: AuthDto,
+      @Req() req: Request,
       @Res({passthrough: true}) res: Response
   ): Promise<authResponse> {
-    const {refreshToken, ...response} = await this.authService.login(dto)
+    const {refreshToken, ...response} = await this.authService.login(req, dto)
 
     this.authService.addRefreshTokenToResponse(res, refreshToken)
 

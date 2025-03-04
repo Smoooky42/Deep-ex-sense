@@ -49,45 +49,45 @@ export class TrackController {
   @UsePipes(new ValidationPipe())
   @Auth()
   @Post()
-  create(@Body() dto: CreateTrackDto): Promise<Track> {
-    return this.trackService.create(dto);
+  async create(@Body() dto: CreateTrackDto): Promise<Track> {
+    return await this.trackService.create(dto);
   }
 
   @ApiCreatedResponse({type: [TrackResponse], description: 'Получение всех треков'})
   @HttpCode(200)
   @Get()
-  findAll(@Query('count') count: number,
+  async findAll(@Query('count') count: number,
           @Query('offset') offset: number) {
-    return this.trackService.getAll(count, offset)
+    return await this.trackService.getAll(count, offset)
   }
 
   @ApiCreatedResponse({type: TrackResponse, description: 'Получение трека по Id'})
   @HttpCode(200)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.trackService.getOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.trackService.getOne(id);
   }
 
   @ApiCreatedResponse({type: [TrackResponse], description: 'Получение трекав по поиску'})
   @HttpCode(200)
   @Get('/search')
-  search(@Query('query') query: string) {
-    return this.trackService.search(query)
+  async search(@Query('query') query: string) {
+    return await this.trackService.search(query)
   }
 
   @ApiCreatedResponse({type: Boolean, description: 'Удаление трека по Id'})
   @HttpCode(200)
   @Auth()
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.trackService.delete(id);
+  async delete(@Param('id') id: string) {
+    return await this.trackService.delete(id);
   }
 
   @ApiCreatedResponse({type: Boolean, description: 'Увеличение кол-ва прослушиваний'})
   @HttpCode(200)
   @Get('/listen/:id')
-  listen(@Param('id') id: string) {
-    return this.trackService.listen(id);
+  async listen(@Param('id') id: string) {
+    return await this.trackService.listen(id);
   }
 
   @ApiCreatedResponse({type: TrackResponse, description: 'Обновление трека'})
@@ -95,9 +95,9 @@ export class TrackController {
   @UsePipes(new ValidationPipe())
   @Auth()
   @Patch(':id')
-  update(@Body() dto: UpdateTrackDto,
+  async update(@Body() dto: UpdateTrackDto,
          @Param('id') id: string,
   ): Promise<Track> {
-    return this.trackService.update(id, dto);
+    return await this.trackService.update(id, dto);
   }
 }

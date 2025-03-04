@@ -1,21 +1,43 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit"
+import { combineReducers, configureStore, createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit"
 import userReducer from './reducers/userSlice'
-import { userApi } from "@/services/userService"
+import { api } from "@/services/api"
+import { authApi } from "@/services/authService"
 
 const rootReducer = combineReducers({
 	userReducer
 })
 
-export const store = configureStore({
-	reducer: {
-		rootReducer,
-		[userApi.reducerPath]: userApi.reducer
-	},
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat(userApi.middleware)
-})
+export const makeStore = () => {
+	return configureStore({
+		reducer: {
+			rootReducer,
+			[api.reducerPath]: api.reducer
+		},
+		middleware: (getDefaultMiddleware) =>
+			getDefaultMiddleware().concat(api.middleware).prepend(listenerMiddleware.middleware)
+	})
+  }
 
+// Infer the type of makeStore
+export type AppStore = ReturnType<typeof makeStore>
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']
+
+
+const listenerMiddleware = createListenerMiddleware()
+
+listenerMiddleware.startListening({
+  matcher: isAnyOf(
+	authApi.endpoints.login.matchFulfilled, 
+	authApi.endpoints.register.matchFulfilled,
+	authApi.endpoints.refresh.matchFulfilled
+),
+  effect: async (action: any, listenerApi) => {
+    // listenerApi.cancelActiveListeners()
+
+    if (action.payload.accessToken) {
+      localStorage.setItem('accessToken', action.payload.accessToken);
+    }
+  },
+})

@@ -44,13 +44,13 @@ export class OrderController {
     @Post('create')
     @Auth()
     async checkout(@Body() dto: OrderDto, @CurrentUser('id') userId: string) {
-        return this.orderService.createPayment(dto, userId)
+        return await this.orderService.createPayment(dto, userId)
     }
 
     @ApiOperation({summary: 'Изменение статуса заказа'})
     @HttpCode(200)
     @Post('status')
     async updateStatus(@Body() dto: PaymentStatusDto) {
-        return this.orderService.updateStatus(dto)
+        return await this.orderService.updateStatus(dto)
     }
 }

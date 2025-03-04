@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -20,7 +21,7 @@ model User {
   orders Order[]
   basket Basket?
   rating Rating[]
-  roles  UsersOnRoles[]
+  roles  Role[]
 
   @@map("user")
 }
@@ -33,21 +34,9 @@ model Role {
   value       String  @unique @default("USER")
   description String?
 
-  users UsersOnRoles[]
+  users User[]
 
   @@map("role")
-}
-
-model UsersOnRoles {
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updatad_at")
-  User      User     @relation(fields: [userId], references: [id])
-  userId    String   @map("user_id")
-  Role      Role     @relation(fields: [roleId], references: [id])
-  roleId    String   @map("role_id")
-
-  @@id([userId, roleId])
-  @@map("users_on_roles")
 }
 
 model Basket {
@@ -58,7 +47,7 @@ model Basket {
   User   User?   @relation(fields: [userId], references: [id])
   userId String? @unique @map("user_id")
 
-  products BasketsOnProducts[]
+  products Product[]
 
   @@map("basket")
 }
@@ -73,7 +62,7 @@ model Product {
   price       Int
   images      String[]
 
-  baskets     BasketsOnProducts[]
+  baskets     Basket[]
   orderItems  OrderItem[]
   productInfo ProductInfo[]
   rating      Rating[]
@@ -82,19 +71,6 @@ model Product {
   categoryId String?   @map("category_id")
 
   @@map("product")
-}
-
-model BasketsOnProducts {
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updatad_at")
-
-  Basket    Basket  @relation(fields: [basketId], references: [id])
-  basketId  String  @map("basket_id")
-  Product   Product @relation(fields: [productId], references: [id])
-  productId String  @map("product_id")
-
-  @@id([basketId, productId])
-  @@map("baskets_on_products")
 }
 
 model ProductInfo {

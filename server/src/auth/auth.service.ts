@@ -1,13 +1,19 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import {
+	BadRequestException,
+	Injectable,
+	InternalServerErrorException,
+	NotFoundException,
+	UnauthorizedException
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
-import { Response } from 'express'
+import { Response, Request} from 'express'
 import {verify} from 'argon2'
 
 import { UserService } from '../user/user.service'
 import { PrismaService } from '../prisma.service'
 import { AuthDto } from './dto/auth.dto'
-import { Basket, User } from '@prisma/client'
+import { Basket, Prisma, User } from '@prisma/client'
 import { BasketService } from '../basket/basket.service'
 
 @Injectable()
@@ -21,9 +27,11 @@ export class AuthService {
 				private configService: ConfigService,
 				private basketService: BasketService) {}
 
-	async login(dto: AuthDto) {
+	async login(req: Request, dto: AuthDto) {
 		const user: User = await this.validateUser(dto)
-		const tokens = this.issueTokens(user.id)
+		const tokens = this.issueTokens(user)
+
+		// await this.saveSession(req, user)
 
 		return {user, ...tokens}
 	}
@@ -34,7 +42,7 @@ export class AuthService {
 
 		const user: User = await this.userService.create(dto)
 		const basket: Basket = await this.basketService.create(user.id)
-		const tokens = this.issueTokens(user.id)
+		const tokens = this.issueTokens(user)
 
 		return {user, ...tokens}
 	}
@@ -46,19 +54,19 @@ export class AuthService {
 		const user: User = await this.userService.getById(result.id)
 		if (!user) throw new NotFoundException(`User ${result.id} not found`)
 
-		const tokens = this.issueTokens(user.id)
+		const tokens = this.issueTokens(user)
 
 		return {user, ...tokens}
 	}
 
-	issueTokens(userId: string) {
-		//const payload = {email: user.email, id: user.id, roles: user.roles}
-		const data = {id: userId}
+	issueTokens(user: any) {
+		const payload = {email: user.email, id: user.id, roles: user.roles}
 
-		const accessToken = this.jwt.sign(data, {
+
+		const accessToken = this.jwt.sign(payload, {
 			expiresIn: '1h'
 		})
-		const refreshToken = this.jwt.sign(data, {
+		const refreshToken = this.jwt.sign(payload, {
 			expiresIn: '7d'
 		})
 
@@ -86,7 +94,7 @@ export class AuthService {
 				}
 			})
 		}
-		const tokens = this.issueTokens(user.id)
+		const tokens = this.issueTokens(user)
 
 		return {user, ...tokens}
 	}
@@ -111,6 +119,26 @@ export class AuthService {
 			expires: new Date(0),
 			secure: true,
 			sameSite: 'none'
+		})
+	}
+
+	public async saveSession(req: Request, user: User) {
+		return new Promise((resolve, reject) => {
+			req.session.userId = user.id
+
+			req.session.save(err => {
+				if (err) {
+					return reject(
+						new InternalServerErrorException(
+							'Не удалось сохранить сессию. Проверьте, правильно ли настроены параметры сессии.'
+						)
+					)
+				}
+
+				resolve({
+					user
+				})
+			})
 		})
 	}
 }

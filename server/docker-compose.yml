@@ -1,7 +1,25 @@
-version: '3.9'
-
 services:
-  db:
+  main:
+    container_name: main
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 5000:5000
+      - 9229:9299
+    command: npm run start
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    networks:
+      - backend
+
+  postgres:
     container_name: postgres
     image: postgres:17.2
     restart: always
@@ -19,7 +37,7 @@ services:
 
   redis:
     container_name: redis
-    image: redis:5.0
+    image: redis:latest
     restart: always
     ports:
       - "6379:6379"

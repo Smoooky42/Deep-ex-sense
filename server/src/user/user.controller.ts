@@ -1,10 +1,12 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common'
 import { ApiCreatedResponse, ApiProperty } from '@nestjs/swagger'
 
 import { UserService } from './user.service'
 import {User} from '@prisma/client'
 import { Auth } from '../auth/decorators/auth.decorator'
 import { AddRoleDto } from './dto/add-role.dto'
+import { Roles } from '../auth/decorators/roles.decorator'
+import { RolesGuard } from '../auth/guards/roles.guard'
 
 export class UserResponse implements User {
     @ApiProperty()
@@ -29,24 +31,24 @@ export class UserController {
 
     @ApiCreatedResponse({type: [UserResponse], description: 'Создание трека'})
     @HttpCode(200)
-    @Auth()
     @Get()
-    getAll() {
-        return this.userService.getAll()
+    async getAll() {
+        return await this.userService.getAll()
     }
 
     @ApiCreatedResponse({type: UserResponse, description: 'Создание трека'})
     @HttpCode(200)
-    @Auth()
     @Get(':id')
-    getOne(@Param('id') id: string) {
-        return this.userService.getById(id)
+    async getOne(@Param('id') id: string) {
+        return await this.userService.getById(id)
     }
 
     @ApiCreatedResponse({type: Boolean, description: 'Создание трека'})
     @HttpCode(200)
+    @Roles("ADMIN")
+    @UseGuards(RolesGuard)
     @Post('/role')
-    addRole(@Body() dto: AddRoleDto) {
-        return this.userService.addRole(dto);
+    async addRole(@Body() dto: AddRoleDto) {
+        return await this.userService.addRole(dto);
     }
 }

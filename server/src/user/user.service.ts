@@ -3,7 +3,7 @@ import {hash} from "argon2"
 
 import { PrismaService } from '../prisma.service'
 import { AuthDto } from '../auth/dto/auth.dto'
-import { Role, User } from '@prisma/client'
+import { User } from '@prisma/client'
 import { AddRoleDto } from './dto/add-role.dto'
 import { RolesService } from '../roles/roles.service'
 
@@ -14,16 +14,25 @@ export class UserService {
 				private readonly rolesService: RolesService) {}
 
 	async create(dto: AuthDto): Promise<User> {
+		const role = await this.rolesService.findRoleByValue("USER")
+		if (!role) await this.rolesService.create({ value: 'USER', description: 'user' })
+
 		const user: User = await this.prisma.user.create({
 			data: {
 				name: dto.name,
 				email: dto.email,
 				password: await hash(dto.password),
+				roles: {
+					connect: {
+						id: role.id
+					}
+				}
+			},
+			include: {
+				roles: true
 			}
 		})
-		// const role = await this.roleService.getRoleByValue("ADMIN")
-		// await user.$set('roles', [role.id])
-		// user.roles = [role]
+
 		return user
 	}
 
@@ -63,20 +72,23 @@ export class UserService {
 	}
 
 	async addRole(dto: AddRoleDto): Promise<boolean> {
-		const { roles: userRoles } = await this.prisma.user.findUnique({
+		const user = await this.prisma.user.findUnique({
 			where: {
 				id: dto.userId
-			},
-			select: {
-				roles: true
 			}
-		});
+		})
 		const role = await this.rolesService.findRoleByValue(dto.value);
-		if (role && userRoles) {
-			await this.prisma.usersOnRoles.create({
+		if (role && user) {
+			await this.prisma.user.update({
+				where: {
+					id: dto.userId
+				},
 				data: {
-					userId: dto.userId,
-					roleId: role.id
+					roles: {
+						connect: {
+							value: dto.value
+						}
+					}
 				}
 			})
 			return true
