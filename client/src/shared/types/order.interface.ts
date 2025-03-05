@@ -34,8 +34,8 @@ export interface IPaymentResponse {
 }
 
 export enum EnumOrderStatus {
-	PENDING = 'Pending',
-	PAYED = 'Payed'
+	PENDING = "Pending",
+	PAYED = "Payed"
 }
 
 export interface IOrder {
@@ -46,4 +46,3 @@ export interface IOrder {
 	user: IUser
 	total: number
 }
-

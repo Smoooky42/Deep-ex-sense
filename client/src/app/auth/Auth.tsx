@@ -1,3 +1,3 @@
 export function Auth() {
-    return <div>Auth</div>
+	return <div>Auth</div>
 }

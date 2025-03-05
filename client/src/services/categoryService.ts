@@ -19,7 +19,7 @@ export const categoryApi = api.injectEndpoints({
             })
         }),
 
-        findOne: builder.query<ICategory, void>({
+        findOne: builder.query<ICategory, string>({
             query: (id) => ({
                 url: API_URL.categories(`/${id}`),
                 method: "GET"
@@ -27,14 +27,14 @@ export const categoryApi = api.injectEndpoints({
         }),
 
         update: builder.mutation<ICategory, Partial<ICategory> & Pick<ICategory, 'id'>>({
-            query: ({id, ...data}) => ({
+            query: (id, ...data) => ({
                 url: API_URL.categories(`/${id}`),
                 method: "PATCH",
                 body: data
             })
         }),
 
-        delete: builder.mutation<boolean, void>({
+        delete: builder.mutation<boolean, string>({
             query: (id) => ({
                 url: API_URL.categories(`/${id}`),
                 method: "DELETE"

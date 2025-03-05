@@ -1,10 +1,10 @@
 import { combineReducers, configureStore, createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit"
-import userReducer from './reducers/userSlice'
 import { api } from "@/services/api"
 import { authApi } from "@/services/authService"
+import  authReducer from "./reducers/authSlice"
 
 const rootReducer = combineReducers({
-	userReducer
+	auth: authReducer,
 })
 
 export const makeStore = () => {

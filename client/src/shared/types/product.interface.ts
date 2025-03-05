@@ -1,28 +1,29 @@
-
 export interface IProduct {
-    id: string,
-    createdAt: string,
-    updatedAt: string,
+	id: string
+	createdAt: string
+	updatedAt: string
 
-    name: string,
-    description: string,
-    price: number,
-    images: string[],
+	name: string
+	description: string
+	price: number
+	images: string[]
 
-    categoryId: string,
+	categoryId: string
 }
 
-export interface IProductInput extends Omit<IProduct, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface IProductInput
+	extends Omit<IProduct, "id" | "createdAt" | "updatedAt"> {}
 
 export interface IProductInfo {
-    id: string,
-    createdAt: string,
-    updatedAt: string,
+	id: string
+	createdAt: string
+	updatedAt: string
 
-    title: string,
-    description: string,
+	title: string
+	description: string
 
-    productId: string
+	productId: string
 }
 
-export interface IProductInfoInput extends Omit<IProductInfo, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface IProductInfoInput
+	extends Omit<IProductInfo, "id" | "createdAt" | "updatedAt"> {}

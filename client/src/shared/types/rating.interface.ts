@@ -1,11 +1,10 @@
-
 export interface IRating {
-    id: string,
-    createdAt: string,
-    updatedAt: string,
+	id: string
+	createdAt: string
+	updatedAt: string
 
-    rating: number,
+	rating: number
 
-    userId: string,
-    productId: string
+	userId: string
+	productId: string
 }

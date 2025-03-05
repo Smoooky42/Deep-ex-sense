@@ -1,12 +1,12 @@
-import {IUser} from './user.interface'
+import { IUser } from "./user.interface"
 
 export interface IAuthInput {
-    name: string,
-    email: string,
-    password: string
+	name: string
+	email: string
+	password: string
 }
 
 export interface IAuthResponse {
-    user: IUser,
-    accessToken: string
+	user: IUser
+	accessToken: string
 }

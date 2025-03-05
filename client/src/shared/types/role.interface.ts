@@ -1,11 +1,10 @@
-
 export interface IRole {
-    id: string,
-    createdAt: string,
-    updatedAt: string
+	id: string
+	createdAt: string
+	updatedAt: string
 
-    value: string,
-    description: string
+	value: string
+	description: string
 }
 
-export interface IRoleInput extends Pick<IRole, 'value' | 'description'> {}
+export interface IRoleInput extends Pick<IRole, "value" | "description"> {}

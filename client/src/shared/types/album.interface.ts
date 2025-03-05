@@ -1,14 +1,13 @@
-import { ITrack } from "./track.interface";
+import { ITrack } from "./track.interface"
 
 export interface IAlbum {
-    id: string,
-    createdAt: string,
-    updatedAt: string,
+	id: string
+	createdAt: string
+	updatedAt: string
 
-    name: string,
-    artist: string,
-    picture: string,
+	name: string
+	artist: string
+	picture: string
 
-    tracks: ITrack
+	tracks: ITrack
 }
-

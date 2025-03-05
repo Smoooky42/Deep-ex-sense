@@ -1,10 +1,9 @@
-
 export interface ICategory {
-    id: string,
-    createdAt: string,
-    updatedAt: string,
+	id: string
+	createdAt: string
+	updatedAt: string
 
-    name: string,
+	name: string
 }
 
-export interface ICategoryInput extends Pick<ICategory, 'name'> {}
+export interface ICategoryInput extends Pick<ICategory, "name"> {}
