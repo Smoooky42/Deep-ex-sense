@@ -1,0 +1,51 @@
+.wrapper {
+	@apply min-h-screen grid grid-cols-1 lg:grid-cols-2;
+
+	> .left {
+		@apply h-full bg-black hidden lg:flex items-center justify-center;
+	}
+
+	> .right {
+		@apply h-full flex flex-col items-center justify-center;
+
+		> .card {
+			@apply border-none p-6 flex flex-col items-center justify-center w-[380px];
+
+			> .header {
+				@apply text-center pb-5;
+			}
+
+			> .content {
+				@apply p-0 w-full;
+
+				form {
+					@apply space-y-5;
+
+					button {
+						@apply w-full transition hover:scale-105 hover:border-white hover:bg-black;
+					}
+				}
+
+				> .social {
+					@apply space-y-3 w-full mt-5;
+
+					> button {
+						@apply w-full transition hover:scale-105 hover:border-black hover:bg-white;
+
+						> svg {
+							@apply size-5 mr-2;
+						}
+					}
+				}
+			}
+
+			> .footer {
+				@apply p-0 mt-4 text-sm text-muted-foreground;
+
+				> button {
+					@apply ml-1 text-black;
+				}
+			}
+		}
+	}
+}

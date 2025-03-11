@@ -64,7 +64,7 @@ export class ProductController {
 
   @ApiCreatedResponse({type: [ProductResponse], description: 'Получение всех продуктов'})
   @HttpCode(200)
-  @Auth()
+  // @Auth()
   // @Roles("ADMIN")  //Если использую, то надо использовать JWTModule
   //@UseGuards(RolesGuard)
   @Get()

@@ -45,7 +45,7 @@ export class UserController {
 
     @ApiCreatedResponse({type: Boolean, description: 'Создание трека'})
     @HttpCode(200)
-    @Roles("ADMIN")
+    // @Roles("ADMIN")
     @UseGuards(RolesGuard)
     @Post('/role')
     async addRole(@Body() dto: AddRoleDto) {
