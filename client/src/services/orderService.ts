@@ -18,7 +18,7 @@ type TypeData = {
 
 export const orderApi = api.injectEndpoints({
 	endpoints: builder => ({
-		create: builder.mutation<TypeData, IPaymentResponse>({
+		create: builder.mutation<IPaymentResponse, TypeData>({
 			query: data => ({
 				url: API_URL.order("/create"),
 				method: "POST",

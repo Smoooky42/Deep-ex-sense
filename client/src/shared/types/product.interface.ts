@@ -1,7 +1,5 @@
 export interface IProduct {
 	id: string
-	createdAt: string
-	updatedAt: string
 
 	name: string
 	description: string

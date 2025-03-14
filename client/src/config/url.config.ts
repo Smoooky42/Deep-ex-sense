@@ -6,11 +6,10 @@ export const PUBLIC_URL = {
 	home: () => PUBLIC_URL.root("/"),
 	auth: () => PUBLIC_URL.root("/auth"),
 	
+	shop: (query = '') => PUBLIC_URL.root(`/shop${query}`),
 	product: (id = "") => PUBLIC_URL.root(`/product/${id}`),
-	category: (id = "") => PUBLIC_URL.root(`/category/${id}`)
+	// category: (id = "") => PUBLIC_URL.root(`/category/${id}`),
+	
 }
 
-export const DASHBOARD_URL = {
-	root: (url = "") => `/dashboard${url ? url : ""}`,
-}
 
