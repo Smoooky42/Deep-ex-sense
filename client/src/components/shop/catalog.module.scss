@@ -1,0 +1,21 @@
+.wrapper {
+	>.header {
+		@apply flex items-center justify-between mb-4 px-10 mt-2;
+
+		>h1 {
+			@apply text-2xl font-bold;
+		}
+
+		>p {
+			@apply mt-2 text-sm text-muted-foreground;
+		}
+	}
+
+	>.catalog {
+		@apply flex items-center w-full;
+
+		>.products {
+			@apply mt-2 mx-6 w-full grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8;
+		}
+	}
+}
