@@ -8,27 +8,27 @@ export const authApi = api.injectEndpoints({
 	endpoints: builder => ({
 		login: builder.mutation<IAuthResponse, IAuthInput>({
 			query: userData => ({
-				url: API_URL.auth("login"),
+				url: API_URL.auth("/login"),
 				method: "POST",
 				body: userData
 			})
 		}),
 		register: builder.mutation<IAuthResponse, IAuthInput>({
 			query: userData => ({
-				url: API_URL.auth("register"),
+				url: API_URL.auth("/register"),
 				method: "POST",
 				body: userData
 			})
 		}),
 		refresh: builder.query<IAuthResponse, void>({
 			query: () => ({
-				url: API_URL.auth("refresh"),
+				url: API_URL.auth("/refresh"),
 				method: "GET"
 			})
 		}),
 		logout: builder.query<boolean, void>({
 			query: () => ({
-				url: API_URL.auth("logout"),
+				url: API_URL.auth("/logout"),
 				method: "GET"
 			})
 		})

@@ -35,6 +35,7 @@ export function AuthFields({
 						<FormItem>
 							<FormControl>
 								<Input
+									type="text"
 									placeholder='Иван'
 									disabled={isLoading}
 									{...field}

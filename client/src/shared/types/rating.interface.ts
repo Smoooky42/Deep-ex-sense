@@ -1,9 +1,7 @@
 export interface IRating {
 	id: string
-	createdAt: string
-	updatedAt: string
 
-	rating: number
+	value: number	// TODO:проверить, какое поле прилетает с сервера. Если не value, то заменить на сервере
 
 	userId: string
 	productId: string

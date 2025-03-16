@@ -9,7 +9,6 @@ export const PUBLIC_URL = {
 	shop: (query = '') => PUBLIC_URL.root(`/shop${query}`),
 	product: (id = "") => PUBLIC_URL.root(`/product/${id}`),
 	// category: (id = "") => PUBLIC_URL.root(`/category/${id}`),
-	
 }
 
 

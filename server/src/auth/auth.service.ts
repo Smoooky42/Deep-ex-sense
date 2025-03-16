@@ -75,6 +75,8 @@ export class AuthService {
 
 	private async validateUser(dto: AuthDto) {
 		const user: User = await this.userService.getByEmail(dto.email)
+		if (!user) throw new NotFoundException(`Некорректный емайл или пароль`)
+			
 		const passwordEqual = await verify(user.password, dto.password)
 
 		if (!user || !passwordEqual) throw new NotFoundException(`Некорректный емайл или пароль`)

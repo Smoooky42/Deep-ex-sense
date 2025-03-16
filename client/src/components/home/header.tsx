@@ -31,7 +31,10 @@ export function Header() {
             price: 100,
             images: ['/images/product1.jpg'],
             description: 'Product 1',
-            categoryId: '1',
+            category: {
+                id: '1',
+                name: 'Category 1'
+            }
         },
     }]
     const total = items.reduce(

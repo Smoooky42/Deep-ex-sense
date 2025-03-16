@@ -2,15 +2,21 @@ import { PUBLIC_URL } from "@/config/url.config";
 import { useLoginMutation, useRegisterMutation } from "@/services/authService";
 import { IAuthInput } from "@/shared/types/auth.interface";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export function useAuthForm(isReg: boolean) {
     const router = useRouter();
 
-	const form = useForm<IAuthInput>({
-		mode: 'onChange'
-	})
+    const form = useForm<IAuthInput>({
+        mode: 'onChange',
+        defaultValues: {
+            name: '',
+            email: '',
+            password: ''
+        }
+    })
 
     // Вызываем оба хука безусловно
     const [registerMutation, registerResult] = useRegisterMutation({ fixedCacheKey: 'login&register' });
@@ -29,14 +35,20 @@ export function useAuthForm(isReg: boolean) {
         }
     };
 
-    if (result.isSuccess) {
-        form.reset()
-        toast.success('Успешная авторизация')
-        router.push(PUBLIC_URL.home())
-    }
-    if (result.isError) {
-        toast.error('Ошибка авторизации')
-    }
+    // Используем useEffect для обработки успешного результата
+    useEffect(() => {
+        if (result.isSuccess) {
+            form.reset()
+            router.push(PUBLIC_URL.home());
+            toast.success('Успешная авторизация')
+        }
+    }, [result.isSuccess, router]);
+
+    useEffect(() => {
+        if (result.isError) {
+            toast.error('Ошибка авторизации');
+        }
+    }, [result.isError]);
 
     return { onSubmit, form, isLoading: result.isLoading }
 }

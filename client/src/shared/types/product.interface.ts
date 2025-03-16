@@ -1,3 +1,6 @@
+import { ICategory } from "./category.interface"
+import { IRating } from "./rating.interface"
+
 export interface IProduct {
 	id: string
 
@@ -6,7 +9,8 @@ export interface IProduct {
 	price: number
 	images: string[]
 
-	categoryId: string
+	category: ICategory
+	rating?: IRating[]
 }
 
 export interface IProductInput
