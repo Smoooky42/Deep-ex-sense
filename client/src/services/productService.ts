@@ -16,14 +16,27 @@ export const productsApi = api.injectEndpoints({
 				url: API_URL.products(""),
 				method: "POST",
 				body: data
-			})
+			}),
+			// Указываем, что при создании продукта кеш должен инвалидироваться
+			// invalidatesTags: [{ type: 'Products', id: 'LIST' }],
 		}),
 
 		findAll: builder.query<IProduct[], void>({
 			query: () => ({
 				url: API_URL.products(""),
 				method: "GET"
-			})
+			}),
+			// Указываем, что данные кешируются под тегом Products с идентификатором LIST
+			// providesTags: [{ type: 'Products', id: 'LIST' }],
+		}),
+
+		findOne: builder.query<IProduct, string>({
+			query: (id) => ({
+				url: API_URL.products(`/${id}`),
+				method: "GET"
+			}),
+			// Кешируем индивидуальный продукт с уникальным id
+			// providesTags: (result, error, id) => [{ type: 'Products', id }],
 		}),
 
 		search: builder.query<IProduct[], string | null>({
@@ -83,7 +96,7 @@ export const productsApi = api.injectEndpoints({
 				url: API_URL.products(`/${id}`),
 				method: "DELETE"
 			})
-		})
+		}),
 	})
 })
 
@@ -96,5 +109,7 @@ export const {
 	useRemoveQuery,
 	useRemoveProductInfoQuery,
 	useSearchQuery,
-	useUpdateProductsInfoMutation
+	useUpdateProductsInfoMutation,
+	useFindOneQuery,
+	useLazyFindOneQuery
 } = productsApi

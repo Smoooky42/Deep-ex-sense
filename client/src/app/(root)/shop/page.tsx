@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Shop } from './Shop'
 import { API_URL, SERVER_URL } from '@/config/api.config';
+import { IProduct } from '@/shared/types/product.interface';
 
 
 export const metadata: Metadata = {
@@ -24,11 +25,8 @@ async function getProducts() {  //Для предварительного пол
         throw new Error("Не удалось загрузить данные");
       }
       
-      const products = await response.json();
-
-      console.log(products)
+      const products: IProduct[] = await response.json();
     
-
 	return products
 }
 

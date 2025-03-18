@@ -7,7 +7,7 @@ interface FavoriteButtonProps {
 }
 
 export function FavoriteButton({ product }: FavoriteButtonProps) {
-	// const { user } = useProfile()
+	// const { user } = useProfile()	//получение user с полем favorites с сервера
 
 	// const queryClient = useQueryClient()
 

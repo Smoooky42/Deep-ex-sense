@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button"
+import { useAppDispatch } from "@/hooks/redux"
+import { useOrderItem } from "@/hooks/useOrderItem"
 import { IProduct } from "@/shared/types/product.interface"
+import { addToOrder, removeFromOrder } from "@/store/reducers/orderItemSlice"
 
 
 interface AddToOrderButtonProps {
@@ -7,29 +10,25 @@ interface AddToOrderButtonProps {
 }
 
 export function AddToOrderButton({ product }: AddToOrderButtonProps) {
-	// const { addToCart, removeFromCart } = useActions()	//это диспатч
-	// const { items } = useCart()	// Получение заказов из редакс
+	const dispatch = useAppDispatch()
+	const { items } = useOrderItem() // Получение заказов из редакс
 
-	// const currentElement = items.find(
-	// 	cartItem => cartItem.product.id === product.id
-	// )
+	const currentElement = items.find(( orderItem) => orderItem.product.id === product.id)
 
 	return (
 		<Button
 			size='lg'
 			className='w-full'
-			// onClick={() =>
-			// 	currentElement
-			// 		? removeFromCart({ id: currentElement.id })
-			// 		: addToCart({
-			// 				product,
-			// 				quantity: 1,
-			// 				price: product.price
-			// 			})
-			// }
+			onClick={() => currentElement
+					? dispatch(removeFromOrder({ id: currentElement.id }))
+					: dispatch(addToOrder({
+							product,
+							quantity: 1,
+							price: product.price
+						}))
+			}
 		>
-			{/* {currentElement ? 'Удалить из корзины' : 'Добавить в корзину'} */}
-			Добавить в корзину
+			{currentElement ? 'Удалить из корзины' : 'Добавить в корзину'}
 		</Button>
 	)
 }

@@ -10,11 +10,11 @@ interface ProductInfoProps {
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
-	const rating =
-		Math.round(
-			product.rating.reduce((acc, rating) => acc + rating.value, 0) /
-				product.rating.length
-		) || 0
+	// const rating =
+	// 	Math.round(
+	// 		product.rating.reduce((acc, rating) => acc + rating.value, 0) / product.rating.length
+	// 	) || 0
+	const rating = 4.5	//TODO: заменить на реальный рейтинг
 
 	return (
 		<div className={styles.product_info}>
@@ -31,8 +31,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
 			<div className={styles.label}>
 				<h3>Средний рейтинг: </h3>
 				<div className='text-sm'>
-					⭐ {rating.toFixed(1)} |{' '}
-					{getReviewWordWithEnding(product.rating.length)}
+					⭐ {rating.toFixed(1)} | {' '} звезд	
+					{/* {getReviewWordWithEnding(product.rating.length)} */}
 				</div>
 			</div>
 			<hr />

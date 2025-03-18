@@ -3,64 +3,78 @@ import { notFound } from 'next/navigation'
 
 import { IProduct } from '@/shared/types/product.interface'
 import { Product } from './Product'
-import { useFindAllQuery } from '@/services/productService'
+import { API_URL, SERVER_URL } from '@/config/api.config'
 
 export const revalidate = 60
 
-// export async function generateStaticParams() {	// TODO: заменить на редакс
-// 	const {data: products, isError, isLoading} = useFindAllQuery()
+export async function generateStaticParams() {
+	const response = await fetch(SERVER_URL + API_URL.products(""), {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		// Следующее нужно для выполнения запроса на серверной стороне:
+		cache: "no-store", // Отключение кэширования для получения свежих данных
+	});
 
-// 	const paths = products.map(product => {
-// 		return {
-// 			params: { id: product.id }
-// 		}
-// 	})
+	// Обработка ответа
+	if (!response.ok) {
+		throw new Error("Не удалось загрузить данные");
+	}
+	const products: IProduct[] = await response.json();
 
-// 	return paths
-// }
-
-// async function getProducts(params: { id: string }) {		// TODO: заменить на редакс
-// 	try {
-// 		const product = await productService.getById(params.id)
-
-// 		const similarProducts = await productService.getSimilar(params.id)
-
-// 		return { product, similarProducts }
-// 	} catch {
-// 		return notFound()
-// 	}
-// }
-
-// export async function generateMetadata({params}: {params: { id: string }}): Promise<Metadata> {
-// 	const { product } = await getProducts(params)	// TODO: заменить на редакс
-
-// 	return {
-// 		title: product.title,
-// 		description: product.description,
-// 		openGraph: {
-// 			images: [
-// 				{
-// 					url: product.images[0],
-// 					width: 1000,
-// 					height: 1000,
-// 					alt: product.title
-// 				}
-// 			]
-// 		}
-// 	}
-// }
-
-export default async function ProductPage({params}: {params: { id: string }}) {
-	// const { product, similarProducts } = await getProducts(params)	
-	
-	const product: IProduct = {
-			id: '1',
-			name: 'тест',
-			description: 'тест',
-			price: 200,
-			images: ['/images/auth.jpg'],
-			categoryId: '1'
+	const paths = products.map(product => {
+		return {
+			params: { id: product.id }
 		}
+	})
+
+	return paths
+}
+
+async function getProductById(params: { id: string }) {		// TODO: заменить на редакс
+	try {
+		const response = await fetch(SERVER_URL + API_URL.products(`/${params.id}`), {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			// Следующее нужно для выполнения запроса на серверной стороне:
+			cache: "no-store", // Отключение кэширования для получения свежих данных
+		});
+		// Обработка ответа
+		if (!response.ok) {
+			throw new Error("Не удалось загрузить данные");
+		}
+		const product: IProduct = await response.json();
+
+		return product
+	} catch {
+		return notFound()
+	}
+}
+
+export async function generateMetadata({params}: {params: { id: string }}): Promise<Metadata> {
+	const product = await getProductById(params)
+
+	return {
+		title: product.name,
+		description: product.description,
+		openGraph: {	//для превью в соцсетях
+			images: [
+				{
+					url: product.images[0],
+					width: 1000,
+					height: 1000,
+					alt: product.name
+				}
+			]
+		}
+	}
+}
+
+export default async function ProductPage({ params }: { params: { id: string } }) {
+	const product = await getProductById(params)	
 
 	return (
 		<Product
