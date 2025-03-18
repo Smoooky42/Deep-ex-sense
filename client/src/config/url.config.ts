@@ -6,9 +6,8 @@ export const PUBLIC_URL = {
 	home: () => PUBLIC_URL.root("/"),
 	auth: () => PUBLIC_URL.root("/auth"),
 	
-	shop: (query = '') => PUBLIC_URL.root(`/shop${query}`),
+	shop: (searchTerm = '') => PUBLIC_URL.root(`/shop${searchTerm}`),
 	product: (id = "") => PUBLIC_URL.root(`/product/${id}`),
-	// category: (id = "") => PUBLIC_URL.root(`/category/${id}`),
 }
 
 

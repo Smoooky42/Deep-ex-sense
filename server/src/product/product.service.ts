@@ -52,29 +52,32 @@ export class ProductService {
     return product
   }
 
-  async search(searchTerm: string): Promise<Product[]> {
-    return this.prisma.product.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: searchTerm,
-              mode: 'insensitive'
+  async search(searchTerm?: string): Promise<Product[]> {
+    if (searchTerm) {
+      return this.prisma.product.findMany({
+        where: {
+          OR: [
+            {
+              name: {
+                contains: searchTerm,
+                mode: 'insensitive'
+              }
+            },
+            {
+              description: {
+                contains: searchTerm,
+                mode: 'insensitive'
+              }
             }
-          },
-          {
-            description: {
-              contains: searchTerm,
-              mode: 'insensitive'
-            }
-          }
-        ]
-      },
-      include: {
-        Category: true,
-        productInfo: true,
-      }
-    })
+          ]
+        },
+        include: {
+          Category: true,
+          productInfo: true,
+        }
+      })
+    }
+    return this.findAll()
   }
 
   async findByCategory(categoryId: string): Promise<Product[]> {

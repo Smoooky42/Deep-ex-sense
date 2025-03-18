@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import { IProduct } from '@/shared/types/product.interface'
 import { Catalog } from '@/components/shop/Catalog'
+import { useSearchQuery } from '@/services/productService'
 
 interface ShopProps {
 	products: IProduct[]
@@ -12,11 +13,9 @@ export function Shop({ products }: ShopProps) {
 	const searchParams = useSearchParams()
 	const searchTerm = searchParams.get('searchTerm')
 
-	// const { data } = useQuery({  // TODO: Заменить на запрос к серверу
-	// 	queryKey: ['product explorer', searchTerm],
-	// 	queryFn: () => productService.getAll(searchTerm),
-	// 	initialData: products
-	// })
+	const {data, isLoading, isError, isSuccess} = useSearchQuery(searchTerm)
+
+    if (isError) return <div>An error has occurred!</div>
 
 	return (
 		<div className='my-6'>
@@ -26,7 +25,7 @@ export function Shop({ products }: ShopProps) {
 						? `Поиск по запросу "${searchTerm}"`
 						: 'Каталог товаров'
 				}
-				products={products} // TODO: заменить на data
+				products={isSuccess ? data : products}
 			/>
 		</div>
 	)

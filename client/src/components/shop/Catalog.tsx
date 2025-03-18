@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import styles from './catalog.module.scss'
 import { IProduct } from '@/shared/types/product.interface'
 import { ProductCard } from './productCard/ProductCard'

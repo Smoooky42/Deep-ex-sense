@@ -14,7 +14,9 @@ export interface IProduct {
 }
 
 export interface IProductInput
-	extends Omit<IProduct, "id" | "createdAt" | "updatedAt"> {}
+	extends Omit<IProduct, "id" | "rating" | "category"> {
+		categoryId: string
+	}
 
 export interface IProductInfo {
 	id: string

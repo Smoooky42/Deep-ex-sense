@@ -20,6 +20,7 @@ export function ProductCard({ product }: ProductCardProps) {
 					alt={product.name}
 					width={220}
 					height={220}
+					priority
 				/>
 			</Link>
 

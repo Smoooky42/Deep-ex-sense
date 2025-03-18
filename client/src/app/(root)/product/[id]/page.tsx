@@ -3,11 +3,12 @@ import { notFound } from 'next/navigation'
 
 import { IProduct } from '@/shared/types/product.interface'
 import { Product } from './Product'
+import { useFindAllQuery } from '@/services/productService'
 
 export const revalidate = 60
 
 // export async function generateStaticParams() {	// TODO: заменить на редакс
-// 	const products = await productService.getAll()
+// 	const {data: products, isError, isLoading} = useFindAllQuery()
 
 // 	const paths = products.map(product => {
 // 		return {

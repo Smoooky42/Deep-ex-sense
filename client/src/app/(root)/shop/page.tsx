@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Shop } from './Shop'
-import { IProduct } from '@/shared/types/product.interface'
+import { API_URL, SERVER_URL } from '@/config/api.config';
 
 
 export const metadata: Metadata = {
@@ -9,31 +9,31 @@ export const metadata: Metadata = {
 
 export const revalidate = 60    // Документация Next Route Segment Config
 
-// async function getProducts() {   // Заменить на получение продуктов из базы данных
-// 	const data = await productService.getAll()
+async function getProducts() {  //Для предварительного получения данных и рендеринга на стороне сервера
+	const response = await fetch(SERVER_URL + API_URL.products(""), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Следующее нужно для выполнения запроса на серверной стороне:
+        cache: "no-store", // Отключение кэширования для получения свежих данных
+      });
+    
+      // Обработка ответа
+      if (!response.ok) {
+        throw new Error("Не удалось загрузить данные");
+      }
+      
+      const products = await response.json();
 
-// 	return data
-// }
+      console.log(products)
+    
+
+	return products
+}
 
 export default async function ShopPage() {
-    //const data = await getProducts()
-    const data: IProduct[] = [{
-        id: '1',
-        name: 'тест',
-        description: 'тест',
-        price: 200,
-        images: ['/images/auth.jpg'],
-        categoryId: '1'
-    },
-    {
-        id: '2',
-        name: 'тест2',
-        description: 'тест2',
-        price: 200,
-        images: ['/images/auth.jpg'],
-        categoryId: '2'
-    },
-    ]
+	const products = await getProducts()
 
-    return <Shop products={data} />
+	return <Shop products={products} />
 }

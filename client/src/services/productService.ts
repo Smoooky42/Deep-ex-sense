@@ -27,16 +27,16 @@ export const productsApi = api.injectEndpoints({
 		}),
 
 		search: builder.query<IProduct[], string | null>({
-			query: (query = null) => ({
-				url: API_URL.products(`search`),
+			query: (searchTerm?) => ({
+				url: API_URL.products(`/search`),
 				method: "GET",
-				params: {_query: query}
+				params: searchTerm ? {searchTerm}: undefined
 			})
 		}),
 
 		findByCategory: builder.query<IProduct[], string>({
 			query: categoryId => ({
-				url: API_URL.products(`by-category/${categoryId}`),
+				url: API_URL.products(`/by-category/${categoryId}`),
 				method: "GET"
 			})
 		}),
