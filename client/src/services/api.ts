@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError} from '@reduxjs/toolkit/query';
+import { API_URL } from "@/config/api.config";
 
 
 const baseQuery = fetchBaseQuery({
@@ -27,7 +28,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 	if (result.error && result.error.status === 401 && !args._isRetry) {
 		args._isRetry = true;
 		// Попытка обновить токен
-		const refreshResult: any = await baseQuery('/refresh', api, extraOptions);
+		const refreshResult: any = await baseQuery(API_URL.auth("/refresh"), api, extraOptions);
 
 		if (refreshResult.data) {
 			// Сохраните новый токен

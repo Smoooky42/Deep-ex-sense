@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { useAppDispatch } from "@/hooks/redux"
-import { useOrderItem } from "@/hooks/useOrderItem"
+import { useOrderItems } from "@/hooks/useOrderItems"
 import { IProduct } from "@/shared/types/product.interface"
 import { addToOrder, removeFromOrder } from "@/store/reducers/orderItemSlice"
 
@@ -11,7 +11,7 @@ interface AddToOrderButtonProps {
 
 export function AddToOrderButton({ product }: AddToOrderButtonProps) {
 	const dispatch = useAppDispatch()
-	const { items } = useOrderItem() // Получение заказов из редакс
+	const { items } = useOrderItems() // Получение заказов из редакс
 
 	const currentElement = items.find(( orderItem) => orderItem.product.id === product.id)
 

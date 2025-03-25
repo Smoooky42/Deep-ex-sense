@@ -21,6 +21,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
 				width={500}
 				height={500}
 				className={styles.image}
+				priority
 			/>
 			<div className={styles.gallery}>
 				{product.images.map((image, index) => (
@@ -39,6 +40,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
 							alt={product.name}
 							width={100}
 							height={100}
+							className={styles.image}
 						/>
 					</button>
 				))}

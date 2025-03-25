@@ -106,7 +106,8 @@ export class AuthController {
     const {refreshToken, ...response} = await this.authService.validateOAuthLogin(req)
     this.authService.addRefreshTokenToResponse(res, refreshToken)
 
-    return res.redirect(`${process.env['CLIENT_URL']}/dashboard?access_token=${response.accessToken}`)
+    // return res.redirect(`${process.env['CLIENT_URL']}/dashboard?access_token=${response.accessToken}`)
+    return res.redirect(`${process.env['CLIENT_URL']}`)
   }
 
   @ApiOperation({summary: 'Авторизация Yandex'})
@@ -123,6 +124,7 @@ export class AuthController {
     const {refreshToken, ...response} = await this.authService.validateOAuthLogin(req)
     this.authService.addRefreshTokenToResponse(res, refreshToken)
 
-    return res.redirect(`${process.env['CLIENT_URL']}/dashboard?access_token=${response.accessToken}`)
+    // return res.redirect(`${process.env['CLIENT_URL']}/dashboard?access_token=${response.accessToken}`)
+    return res.redirect(`${process.env['CLIENT_URL']}`)
   }
 }

@@ -11,9 +11,9 @@ enum FileType {
 export class FileService {
 	async saveFiles(files: Express.Multer.File[],
 					// type: FileType,
-					folder: string = 'products' ): Promise<string[]> {
+					folder?: string ): Promise<string[]> {
 		try {
-			const uploadedFolder = `${path}/uploads/${folder}`
+			const uploadedFolder = `${path}/uploads${folder}`
 			await ensureDir(uploadedFolder)
 
 			const filePaths: string[] = await Promise.all(
@@ -23,7 +23,7 @@ export class FileService {
 					// const fileName = uuid.v4() + '.' + fileExtension
 
 					await writeFile(`${uploadedFolder}/${originalName}`, file.buffer)
-					return `/uploads/${folder}/${originalName}`
+					return `/uploads${folder}/${originalName}`
 				})
 			)
 			return filePaths

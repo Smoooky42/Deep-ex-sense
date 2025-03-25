@@ -7,7 +7,7 @@ export const API_URL = {
 	user: (url = "") => API_URL.root(`/users${url}`),
 	products: (url = "") => API_URL.root(`/products${url}`),
 	categories: (url = "") => API_URL.root(`/categories${url}`),
-	order: (url = "") => API_URL.root(`/orders${url}`),
+	order: (url = "") => API_URL.root(`/order${url}`),
 	files: (url = "") => API_URL.root(`/files${url}`),
 	basket: (url = "") => API_URL.root(`/basket${url}`),
 	roles: (url = "") => API_URL.root(`/roles${url}`),

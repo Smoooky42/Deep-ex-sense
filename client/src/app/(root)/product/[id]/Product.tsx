@@ -15,9 +15,9 @@ interface ProductProps {
 
 export function Product({initialProduct, id}: ProductProps) {
 
-	const [trigger, { data: product, isSuccess, isError }] = useLazyFindOneQuery();
+	const [trigger, { data: product, isSuccess, isError }] = useLazyFindOneQuery();	// Наверно можно без lazy, так как id приходит асинхронно
 
-	useEffect(() => {
+	useEffect(() => {	// Наверно не нужно, так как получаю params асинхронно
 		// Проверяем, есть ли id, и только тогда вызываем запрос
 		if (id) {
 		  trigger(id); // Запуск запроса с параметром id

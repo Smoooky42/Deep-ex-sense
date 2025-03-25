@@ -6,7 +6,7 @@ import { api } from "./api"
 
 export const trackApi = api.injectEndpoints({
 	endpoints: builder => ({
-		create: builder.mutation<ITrack, ITrackInput>({
+		createTrack: builder.mutation<ITrack, ITrackInput>({
 			query: data => ({
 				url: API_URL.track(""),
 				method: "POST",
@@ -14,7 +14,7 @@ export const trackApi = api.injectEndpoints({
 			})
 		}),
 
-		findAll: builder.query<ITrack[], { count: number; offset: number }>({
+		findAllTracks: builder.query<ITrack[], { count?: number; offset?: number }>({
 			query: ( { count = 10, offset = 1 } ) => ({
 				url: API_URL.track(""),
 				method: "GET",
@@ -22,14 +22,14 @@ export const trackApi = api.injectEndpoints({
 			})
 		}),
 
-		findOne: builder.query<ITrack, string>({
+		findOneTrack: builder.query<ITrack, string>({
 			query: id => ({
 				url: API_URL.track(`/${id}`),
 				method: "GET"
 			})
 		}),
 
-		search: builder.query<ITrack, string | null>({
+		searchTrack: builder.query<ITrack, string | null>({
 			query: (query = null) => ({
 				url: API_URL.track(`/search`),
 				method: "GET",
@@ -37,7 +37,7 @@ export const trackApi = api.injectEndpoints({
 			})
 		}),
 
-		update: builder.mutation<ITrack, Partial<ITrack> & Pick<ITrack, "id">>({
+		updateTrack: builder.mutation<ITrack, Partial<ITrack> & Pick<ITrack, "id">>({
 			query: ({ id, ...data }) => ({
 				url: API_URL.track(`/${id}`),
 				method: "PATCH",
@@ -45,28 +45,29 @@ export const trackApi = api.injectEndpoints({
 			})
 		}),
 
-		delete: builder.mutation<boolean, string>({
+		deleteTrack: builder.mutation<boolean, string>({
 			query: id => ({
 				url: API_URL.track(`/${id}`),
 				method: "DELETE"
 			})
 		}),
 
-		listen: builder.query<boolean, string>({
+		listenTrack: builder.query<boolean, string>({
 			query: id => ({
 				url: API_URL.track(`listen/${id}`),
 				method: "GET"
 			})
 		})
-	})
+	}),
+	overrideExisting: true,
 })
 
 export const {
-	useCreateMutation,
-	useDeleteMutation,
-	useFindAllQuery,
-	useFindOneQuery,
-	useSearchQuery,
-	useUpdateMutation,
-	useListenQuery
+	useCreateTrackMutation,
+	useFindAllTracksQuery,
+	useFindOneTrackQuery,
+	useSearchTrackQuery,
+	useUpdateTrackMutation,
+	useDeleteTrackMutation,
+	useListenTrackQuery
 } = trackApi

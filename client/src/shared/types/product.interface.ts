@@ -9,7 +9,7 @@ export interface IProduct {
 	price: number
 	images: string[]
 
-	category: ICategory
+	Category: ICategory
 	rating?: IRating[]
 }
 

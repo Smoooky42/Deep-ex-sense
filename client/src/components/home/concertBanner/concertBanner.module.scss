@@ -1,0 +1,30 @@
+.concertBanner_container {
+    padding-top: 20px;
+}
+
+.concertBanner_content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width:100%;
+
+    h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #fff;
+        position: relative;
+        left: -29vw;
+    }
+}
+
+.concertBanner_item {
+    width: 70vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    transition: 2s;
+    color: #fff;
+}

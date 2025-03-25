@@ -1,5 +1,6 @@
 .header {
-	@apply p-5 gap-x-4 flex items-center bg-black border-b h-20;
+	@apply p-5 h-20 gap-x-4 flex items-center bg-[#0E0D0D] border-b-2 border-y-white 
+	border-opacity-20;
 
 	>.logo {
 		@apply flex items-center gap-x-3 hover:opacity-75 transition-opacity;
@@ -30,13 +31,13 @@
 	}
 
 	>.header_menu {
-		@apply hidden items-center gap-x-2 ml-auto lg:flex;
+		@apply flex items-center gap-x-4 ml-auto;
 
 		.header_menu_button {
-			@apply bg-black text-white hover:bg-white hover:text-black
+			@apply bg-black text-white hover:bg-white hover:text-black w-[100px];
 		}
 
-		>.icon {
+		.icon {
 			@apply size-4 mr-2;
 		}
 
@@ -46,53 +47,13 @@
 			.items {
 				@apply flex flex-col w-full flex-1;
 
-				>.item {
-					@apply flex items-center mb-5;
-
-					>.image {
-						@apply relative h-28 w-28 rounded-md overflow-hidden;
-
-						>img {
-							@apply object-cover;
-						}
-					}
-
-					>.right {
-						@apply ml-6;
-
-						>h2 {
-							@apply font-medium line-clamp-1;
-						}
-
-						>p {
-							@apply text-sm text-muted-foreground mt-1;
-						}
-
-						.actions {
-							@apply flex items-center mt-1;
-
-							input {
-								@apply w-10 text-center text-sm;
-							}
-
-							button {
-								@apply size-7;
-
-								svg {
-									@apply size-4;
-								}
-							}
-						}
-					}
-				}
-
 				>.not_found {
 					@apply text-sm text-muted-foreground;
 				}
 			}
 
-			>.total {
-				@apply text-lg font-medium;
+			.total {
+				@apply text-lg font-medium ;
 			}
 
 			>button {

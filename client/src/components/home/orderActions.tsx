@@ -1,19 +1,21 @@
 import { Minus, Plus } from 'lucide-react'
-import styles from './header.module.scss'
+import styles from './orderItem.module.scss'
 import { Button } from '../ui/button'
 import { IOrderItem } from '@/shared/types/orderItem.interface'
+import { useAppDispatch } from '@/hooks/redux'
+import { changeQuantity } from '@/store/reducers/orderItemSlice'
 
 interface OrderItemProps {
 	item: IOrderItem
 }
 
 export function OrderActions({ item }: OrderItemProps) {
-	// const { changeQuantity } = useActions()	// TODO: добавить метод в orderSlice
+	const dispatch = useAppDispatch()
 
 	return (
 		<div className={styles.actions}>
 			<Button
-				// onClick={() => changeQuantity({ id: item.id, type: 'minus' })}
+				onClick={() => dispatch(changeQuantity({ id: item.id, type: 'minus' }))}
 				variant='ghost'
 				size='icon'
 				disabled={item.quantity === 1}
@@ -24,7 +26,7 @@ export function OrderActions({ item }: OrderItemProps) {
 			<input disabled readOnly value={item.quantity} />
 
 			<Button
-				// onClick={() => changeQuantity({ id: item.id, type: 'plus' })}
+				onClick={() => dispatch(changeQuantity({ id: item.id, type: 'plus' }))}
 				variant='ghost'
 				size='icon'
 			>

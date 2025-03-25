@@ -5,47 +5,32 @@ import { SITE_NAME } from "@/shared/constants/seo.constants";
 import Image from "next/image";
 import Link from "next/link";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { use, useState } from "react";
 import { Button } from "../ui/button";
 import { FaSearch } from "react-icons/fa";
 import { LogOut } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { formatPrice } from "@/lib/string/format-price";
 import { OrderItem } from "./orderItem";
 import styles from './header.module.scss'
-import { IOrderItem } from "@/shared/types/orderItem.interface";
 import { useCheckout } from "@/hooks/useCheckout";
 import { useRouter } from "next/navigation";
+import { useOrderItems } from "@/hooks/useOrderItems";
+import { useAppSelector } from "@/hooks/redux";
+import { useRefreshQuery } from "@/services/authService";
 
 export function Header() {
-    const [query, setQueryTerm] = useState<string>('')
+    const [searchTerm, setSearchTerm] = useState<string>('')
+
+    // useRefreshQuery()    //Для убирания кнопки логин, если авторизован. Но проблема в том, что если не авторизован, приходит ошибка 404, ловит интерсептор и перекидывает на /auth
+    const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated)
 
     const router = useRouter()
-    const items: IOrderItem[] = [{ //TODO: заменить на реальные данные
-        id: '1',
-        quantity: 2,
-        price: 100,
-        product: {
-            id: '1',
-            name: 'Product 1',
-            price: 100,
-            images: ['/images/product1.jpg'],
-            description: 'Product 1',
-            category: {
-                id: '1',
-                name: 'Category 1'
-            }
-        },
-    }]
-    const total = items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    )
+    const { items, total } = useOrderItems()
     const { handleCreateOrder: createPayment, isLoading: isLoadingOrder } = useCheckout()
-    const user = false
 
     const handleClick = () => {
-        user ? createPayment() : router.push(PUBLIC_URL.auth())
+        isAuthenticated ? createPayment() : router.push(PUBLIC_URL.auth())
     }
 
     return (
@@ -63,13 +48,13 @@ export function Header() {
             <div className={styles.search}>
                 <Input
                     placeholder='Поиск товаров'
-                    value={query}
-                    onChange={e => setQueryTerm(e.target.value)}
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
                 />
                 <Button
                     onClick={() =>
                         router.push(
-                            PUBLIC_URL.shop(`?query=${query}`)
+                            PUBLIC_URL.shop(`?searchTerm=${searchTerm}`)
                         )
                     }
                 >
@@ -78,9 +63,6 @@ export function Header() {
             </div>
 
             <div className={styles.header_menu}>
-                <Link href={PUBLIC_URL.shop()}> {/*поменять роут */}
-                    <Button variant='ghost' className={styles.header_menu_button}>Каталог</Button>
-                </Link>
                 <Link href={PUBLIC_URL.shop()}>
                     <Button variant='ghost' className={styles.header_menu_button}>Магазин</Button>
                 </Link>
@@ -90,9 +72,14 @@ export function Header() {
                         <Button variant='ghost' className={styles.header_menu_button}>Корзина</Button>
                     </SheetTrigger>
                     <SheetContent className={styles.sheet}>
-                        <div className='space-y-1'>
-                            <h2 className='text-2xl font-medium'>Корзина товаров</h2>
-                        </div>
+                        <SheetHeader>
+                            <SheetTitle>
+                                <div className='space-y-1'>
+                                    <h2 className='text-2xl font-medium'>Корзина товаров</h2>
+                                </div>
+                            </SheetTitle>
+                            <SheetDescription>Добавляйте свои покупки</SheetDescription>
+                        </SheetHeader>
                         <div className={styles.items}>
                             {items.length ? (
                                 items.map(item => (
@@ -118,9 +105,9 @@ export function Header() {
                     </SheetContent>
                 </Sheet>
 
-                {!user && (
+                {!isAuthenticated && (
                     <Link href={PUBLIC_URL.auth()}>
-                        <Button variant='outline' className='bg-white text-black hover:scale-110'>
+                        <Button variant='outline' className='bg-white text-black w-[100px] hover:scale-110'>
                             <LogOut className={styles.icon} />
                             Войти
                         </Button>

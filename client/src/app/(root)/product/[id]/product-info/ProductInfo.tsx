@@ -25,7 +25,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
 			<hr />
 			<div className={styles.label}>
 				<h3>Категория: </h3>
-				{product.category.name}
+				{product.Category.name}
 
 			</div>
 			<div className={styles.label}>

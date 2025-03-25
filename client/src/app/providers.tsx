@@ -1,12 +1,12 @@
 "use client"
 
-import { type PropsWithChildren, useRef, useState } from "react"
+import { type PropsWithChildren, useRef } from "react"
 import { Toaster } from "react-hot-toast"
 import { Provider } from "react-redux"
-
 import { AppStore, makeStore } from "@/store/store"
-
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+// export const AudioContext = createContext<{ audio: HTMLAudioElement | null }>({ audio: null });
 
 export function Providers({ children }: PropsWithChildren) {
 	// const [client] = useState(
@@ -25,11 +25,15 @@ export function Providers({ children }: PropsWithChildren) {
 		storeRef.current = makeStore()
 	}
 
+	// const audio = useRef<HTMLAudioElement | null>(new Audio());
+
 	return (
 		// <QueryClientProvider client={client}>
 		<Provider store={storeRef.current}>
-			<Toaster />
-			{children}
+			{/* <AudioContext.Provider value={{ audio: audio.current }}> */}
+				<Toaster />
+				{children}
+			{/* </AudioContext.Provider> */}
 		</Provider>
 		// </QueryClientProvider>
 	)

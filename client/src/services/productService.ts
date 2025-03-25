@@ -97,7 +97,8 @@ export const productsApi = api.injectEndpoints({
 				method: "DELETE"
 			})
 		}),
-	})
+	}),
+		overrideExisting: true,
 })
 
 export const {

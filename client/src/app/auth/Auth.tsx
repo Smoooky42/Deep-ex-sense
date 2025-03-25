@@ -24,6 +24,7 @@ export function Auth() {
 					alt='Deep-ex-sense auth'
 					width={200}
 					height={200}
+					priority
 				/>
 			</div>
 			<div className={styles.right}>

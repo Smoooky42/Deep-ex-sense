@@ -67,7 +67,7 @@ body {
 		@apply border-border;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-black text-foreground;
 
 		font-family: var(--font-geist-sans), sans-serif; //не обязательно
 	}

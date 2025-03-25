@@ -1,0 +1,17 @@
+.shopBanner_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 30px;
+
+    >h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #fff;
+        position: relative;
+        left: -29vw;
+        margin-bottom: 15px;
+    }
+}

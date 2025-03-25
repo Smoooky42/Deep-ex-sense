@@ -1,29 +1,18 @@
+'use client'
+
 import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
 import toast from 'react-hot-toast'
-import { IOrderItem } from '@/shared/types/orderItem.interface'
 import { useAppDispatch } from './redux'
-import { useCreateMutation } from '@/services/orderService'
+import { useCreateOrderMutation } from '@/services/orderService'
+import { useOrderItems } from './useOrderItems'
+import { reset } from '@/store/reducers/orderItemSlice'
 
 export const useCheckout = () => {
     const router = useRouter()
-    const items: IOrderItem[] = [{  //TODO: replace with actual data
-        id: '1',
-        quantity: 2,
-        price: 100,
-        product: {
-            id: '1',
-            name: 'Product 1',
-            price: 100,
-            images: ['/images/product1.jpg'],
-            description: 'Product 1',
-            categoryId: '1',
-        },
-    }]
+    const {items} = useOrderItems()
+    const dispatch = useAppDispatch()
 
-    // const { reset } = useAppDispatch()   //TODO: добавить метод reset в orderSlice
-
-    const [mutate, { isLoading, isError, isSuccess }] = useCreateMutation()
+    const [mutate, { isLoading}] = useCreateOrderMutation()
 
     const handleCreateOrder = async () => {
         const response = await mutate({
@@ -33,14 +22,16 @@ export const useCheckout = () => {
                 productId: item.product.id
             }))
         }).unwrap()
-
-        if (isSuccess) {
-            // reset()
-            router.push(response.confirmation.confirmation_url)
-        }
-        if (isError) toast.error('Ошибка при создании платежа')
+        .then(res => {
+            if (res?.confirmation?.confirmation_url) {    
+                dispatch(reset())
+                router.push(res.confirmation.confirmation_url)
+            }
+        })
+        .catch(err => {
+            toast.error('Ошибка при создании платежа')
+        })
     }
 
     return {handleCreateOrder, isLoading}
-
 }

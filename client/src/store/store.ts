@@ -41,3 +41,42 @@ listenerMiddleware.startListening({
 		}
 	},
 })
+
+// listenerMiddleware.startListening({	// Middleware для обработки ошибок 401 и обновления токена
+// 	predicate: (action: any) => 
+// 	  action.type.endsWith('/rejected') &&
+// 	  action.error?.status === 401 && 
+// 	  !action.meta.isRetry, // Проверяем, вызывался ли middleware
+// 	effect: async (action: any, listenerApi) => {
+// 	  try {
+// 		// Запрос обновления токена через refresh endpoint
+// 		const refreshResult: any = await listenerApi.dispatch(authApi.endpoints.refresh.initiate());
+  
+// 		if ('data' in refreshResult) {
+// 		  // Сохраняем новый токен в localStorage
+// 		  localStorage.setItem('accessToken', refreshResult.data.token);
+  
+// 		  // Отмечаем, что запрос повторяется
+// 		  const originalAction = {
+// 			...action.meta.arg,
+// 			meta: {
+// 			  ...action.meta.arg.meta,
+// 			  isRetry: true,
+// 			},
+// 		  };
+  
+// 		  // Повторяем оригинальный запрос
+// 		  const retryResult = await listenerApi.dispatch(originalAction);
+  
+// 		  if ('error' in retryResult) {
+// 			console.error('Ошибка при повторном запросе:', retryResult.error);
+// 		  }
+// 		} else {
+// 		  console.error('Ошибка обновления токена:', refreshResult.error);
+// 		}
+// 	  } catch (error) {
+// 		console.error('Ошибка при обработке middleware:', error);
+// 	  }
+// 	},
+//   });
+  

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { IProduct } from '@/shared/types/product.interface'
 import { Product } from './Product'
 import { API_URL, SERVER_URL } from '@/config/api.config'
+import { APP_URL } from '@/config/url.config'
 
 export const revalidate = 60
 
@@ -32,9 +33,9 @@ export async function generateStaticParams() {
 	return paths
 }
 
-async function getProductById(params: { id: string }) {		// TODO: заменить на редакс
+async function getProductById(id: string ) {
 	try {
-		const response = await fetch(SERVER_URL + API_URL.products(`/${params.id}`), {
+		const response = await fetch(SERVER_URL + API_URL.products(`/${id}`), {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -55,31 +56,35 @@ async function getProductById(params: { id: string }) {		// TODO: заменит
 }
 
 export async function generateMetadata({params}: {params: { id: string }}): Promise<Metadata> {
-	const product = await getProductById(params)
+	const { id } = await params
+	const product = await getProductById(id)
 
 	return {
 		title: product.name,
 		description: product.description,
-		openGraph: {	//для превью в соцсетях
+		openGraph: {
 			images: [
 				{
-					url: product.images[0],
+					url: `${new URL(product.images[0], APP_URL).toString()}`,
 					width: 1000,
 					height: 1000,
-					alt: product.name
-				}
-			]
-		}
-	}
+					alt: product.name,
+				},
+			],
+		},
+		metadataBase: new URL(APP_URL!), // Указываем базовый URL
+	};
+
 }
 
 export default async function ProductPage({ params }: { params: { id: string } }) {
-	const product = await getProductById(params)	
+	const { id } = await params
+	const product = await getProductById(id)
 
 	return (
 		<Product
 			initialProduct={product}
-			id={params.id}
+			id={id}
 		/>
 	)
 }

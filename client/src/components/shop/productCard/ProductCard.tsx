@@ -20,18 +20,20 @@ export function ProductCard({ product }: ProductCardProps) {
 					alt={product.name}
 					width={220}
 					height={220}
-					priority
+					style={{ width: "auto", height: "auto" }}
 				/>
 			</Link>
 
-			<h3 className={styles.title}>{product.name}</h3>
-			{/* <Link
+			<div className='flex justify-center items-center flex-col'>
+				<h3 className={styles.title}>{product.name}</h3>
+				{/* <Link
 				href={PUBLIC_URL.category(product.category.id)}
 				className={styles.category}
 			>
 				{product.category.title}
 			</Link> */}
-			<p className={styles.price}>{formatPrice(product.price)}</p>
+				<p className={styles.price}>{formatPrice(product.price)}</p>
+			</div>
 		</div>
 	)
 }

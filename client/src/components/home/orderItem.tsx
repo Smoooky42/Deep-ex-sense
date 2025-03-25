@@ -3,8 +3,7 @@ import Link from 'next/link'
 
 import { PUBLIC_URL } from '@/config/url.config'
 
-
-import styles from './header.module.scss'
+import styles from './orderItem.module.scss'
 
 import { OrderActions } from './orderActions'
 import { IOrderItem } from '@/shared/types/orderItem.interface'
@@ -24,7 +23,8 @@ export function OrderItem({ item }: OrderItemProps) {
 				<Image
 					src={item.product.images[0]}
 					alt={item.product.name}
-					fill
+					width={100}
+                    height={100}
 				/>
 			</Link>
 			<div className={styles.right}>

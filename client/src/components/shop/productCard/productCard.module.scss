@@ -1,19 +1,19 @@
 .card {
-	@apply bg-white flex flex-col items-center shadow-md rounded-lg p-4;
+	@apply bg-white flex flex-col items-center justify-between shadow-md rounded-lg p-4;
 
 	img {
 		@apply rounded-lg;
 	}
 
-	> .title {
+	.title {
 		@apply mt-4 font-semibold text-gray-700 line-clamp-1 text-center;
 	}
 
-	> .category {
+	.category {
 		@apply mt-1 text-sm text-gray-500;
 	}
 
-	> .price {
+	.price {
 		@apply mt-1 font-medium text-sm text-gray-900;
 	}
 }
