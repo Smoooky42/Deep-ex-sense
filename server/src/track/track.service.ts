@@ -2,22 +2,21 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { PrismaService } from '../prisma.service'
 import { CreateTrackDto } from './dto/create-track.dto'
-import {Track} from '@prisma/client'
+import { Track } from '@prisma/client'
 import { UpdateTrackDto } from './dto/update-track.dto'
 
 @Injectable()
 export class TrackService {
-
 	constructor(private readonly prisma: PrismaService) {}
 
-	async create (dto: CreateTrackDto): Promise<Track> {
+	async create(dto: CreateTrackDto): Promise<Track> {
 		const track: Track = await this.prisma.track.create({
 			data: {
 				name: dto.name,
 				artist: dto.artist,
 				text: dto.text,
 				picture: dto.picture,
-				audio: dto.audio,	//можно было просто ...dto
+				audio: dto.audio, //можно было просто ...dto
 				listens: 0
 			}
 		})
@@ -57,14 +56,15 @@ export class TrackService {
 	}
 
 	async listen(id: string): Promise<boolean> {
-		let { listens }: {listens: number} = await this.prisma.track.findUnique({
-			where: {
-				id: id
-			},
-			select: {
-				listens: true
-			}
-		})
+		const { listens }: { listens: number } =
+			await this.prisma.track.findUnique({
+				where: {
+					id: id
+				},
+				select: {
+					listens: true
+				}
+			})
 
 		const track: Track = await this.prisma.track.update({
 			where: {
@@ -81,18 +81,18 @@ export class TrackService {
 		const tracks: Track[] = await this.prisma.track.findMany({
 			where: {
 				name: {
-					contains: query,	//содержит query
-					mode: 'insensitive'	//без учета регистра
+					contains: query, //содержит query
+					mode: 'insensitive' //без учета регистра
 				}
 			}
 		})
-		return tracks;
+		return tracks
 	}
 
 	async update(id: string, dto: UpdateTrackDto): Promise<Track> {
 		const track: Track = await this.prisma.track.update({
 			where: {
-				id,
+				id
 			},
 			data: {
 				...dto

@@ -1,0 +1,45 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run tests
+        working-directory: ./backend
+        run: npm test
+
+      # - name: Run linter
+      #   working-directory: ./backend
+      #   run: npm run lint
+
+  # frontend:
+  #   name: Frontend CI
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Install dependencies
+  #       working-directory: ./frontend
+  #       run: npm install
+
+  #     - name: Run linter
+  #       working-directory: ./frontend
+  #       run: npm run lint
+
+  #     - name: Run tests
+  #       working-directory: ./frontend
+  #       run: npm test

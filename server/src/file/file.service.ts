@@ -9,9 +9,11 @@ enum FileType {
 
 @Injectable()
 export class FileService {
-	async saveFiles(files: Express.Multer.File[],
-					// type: FileType,
-					folder?: string ): Promise<string[]> {
+	async saveFiles(
+		files: Express.Multer.File[],
+		// type: FileType,
+		folder?: string
+	): Promise<string[]> {
 		try {
 			const uploadedFolder = `${path}/uploads${folder}`
 			await ensureDir(uploadedFolder)
@@ -22,7 +24,10 @@ export class FileService {
 					// const fileExtension = file.originalname.split('.').pop() //разрешение файла
 					// const fileName = uuid.v4() + '.' + fileExtension
 
-					await writeFile(`${uploadedFolder}/${originalName}`, file.buffer)
+					await writeFile(
+						`${uploadedFolder}/${originalName}`,
+						file.buffer
+					)
 					return `/uploads${folder}/${originalName}`
 				})
 			)
@@ -32,13 +37,12 @@ export class FileService {
 		}
 	}
 
-	async deleteFiles(filePaths: string[]): Promise<string[]>{
+	async deleteFiles(filePaths: string[]): Promise<string[]> {
 		try {
-			filePaths.map(
-				async(filePath: string)=> await rm(filePath))
+			filePaths.map(async (filePath: string) => await rm(filePath))
 
 			return filePaths
-		} catch(e){
+		} catch (e) {
 			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}

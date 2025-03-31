@@ -1,56 +1,54 @@
 services:
-  main:
-    container_name: main
-    build:
-      context: .
-    env_file:
-      - .env
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - 5000:5000
-      - 9229:9299
-    command: npm run start
-    depends_on:
-      - postgres
-      - redis
-    restart: always
-    networks:
-      - backend
+    main:
+        container_name: main
+        build:
+            context: .
+        env_file:
+            - .env
+        volumes:
+            - .:/app
+            - /app/node_modules
+        ports:
+            - 5000:5000
+            - 9229:9299
+        command: npm run start
+        depends_on:
+            - postgres
+            - redis
+        restart: always
+        networks:
+            - backend
 
-  postgres:
-    container_name: postgres
-    image: postgres:17.2
-    restart: always
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - backend
+    postgres:
+        container_name: postgres
+        image: postgres:17.2
+        restart: always
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_DB=${POSTGRES_DB}
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - backend
 
-
-  redis:
-    container_name: redis
-    image: redis:latest
-    restart: always
-    ports:
-      - "6379:6379"
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - redis_data:/data
-    networks:
-      - backend
-
+    redis:
+        container_name: redis
+        image: redis:latest
+        restart: always
+        ports:
+            - '6379:6379'
+        command: redis-server --requirepass ${REDIS_PASSWORD}
+        volumes:
+            - redis_data:/data
+        networks:
+            - backend
 
 volumes:
-  postgres_data:
-  redis_data:
+    postgres_data:
+    redis_data:
 
 networks:
-  backend:
+    backend:

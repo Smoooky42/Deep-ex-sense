@@ -1,8 +1,22 @@
-import { Body, Controller, HttpCode, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	HttpCode,
+	Post,
+	Query,
+	UploadedFiles,
+	UseInterceptors
+} from '@nestjs/common'
 import { FileService } from './file.service'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { Auth } from '../auth/decorators/auth.decorator'
-import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import {
+	ApiBody,
+	ApiConsumes,
+	ApiCreatedResponse,
+	ApiOperation,
+	ApiResponse
+} from '@nestjs/swagger'
 import { FileUploadDto } from './dto/file-upload.dto'
 
 @Controller('file')
@@ -11,7 +25,7 @@ export class FileController {
 
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({ description: 'Массив файлов', type: FileUploadDto })
-	@ApiCreatedResponse({type: [String], description: 'Загрузка файлов'})
+	@ApiCreatedResponse({ type: [String], description: 'Загрузка файлов' })
 	@HttpCode(200)
 	@UseInterceptors(FilesInterceptor('file'))
 	@Auth()
@@ -23,7 +37,7 @@ export class FileController {
 		return await this.fileService.saveFiles(files, folder)
 	}
 
-	@ApiCreatedResponse({type: [String], description: 'Удаление файлов'})
+	@ApiCreatedResponse({ type: [String], description: 'Удаление файлов' })
 	@ApiBody({ type: [String] })
 	@HttpCode(200)
 	@Auth()

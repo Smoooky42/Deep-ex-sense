@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import {hash} from "argon2"
+import { hash } from 'argon2'
 
 import { PrismaService } from '../prisma.service'
 import { AuthDto } from '../auth/dto/auth.dto'
@@ -7,15 +7,20 @@ import { User } from '@prisma/client'
 import { AddRoleDto } from './dto/add-role.dto'
 import { RolesService } from '../roles/roles.service'
 
-
 @Injectable()
 export class UserService {
-	constructor(private readonly prisma: PrismaService,
-				private readonly rolesService: RolesService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly rolesService: RolesService
+	) {}
 
 	async create(dto: AuthDto): Promise<User> {
-		const role = await this.rolesService.findRoleByValue("USER")
-		if (!role) await this.rolesService.create({ value: 'USER', description: 'user' })
+		const role = await this.rolesService.findRoleByValue('USER')
+		if (!role)
+			await this.rolesService.create({
+				value: 'USER',
+				description: 'user'
+			})
 
 		const user: User = await this.prisma.user.create({
 			data: {
@@ -77,7 +82,7 @@ export class UserService {
 				id: dto.userId
 			}
 		})
-		const role = await this.rolesService.findRoleByValue(dto.value);
+		const role = await this.rolesService.findRoleByValue(dto.value)
 		if (role && user) {
 			await this.prisma.user.update({
 				where: {
@@ -93,6 +98,9 @@ export class UserService {
 			})
 			return true
 		}
-		throw new HttpException('Пользователь или роль не найдены', HttpStatus.NOT_FOUND);
+		throw new HttpException(
+			'Пользователь или роль не найдены',
+			HttpStatus.NOT_FOUND
+		)
 	}
 }

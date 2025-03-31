@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
-import { Response, Request} from 'express'
-import {verify} from 'argon2'
+import { Response, Request } from 'express'
+import { verify } from 'argon2'
 
 import { UserService } from '../user/user.service'
 import { PrismaService } from '../prisma.service'
 import { AuthDto } from './dto/auth.dto'
-import { Basket, Prisma, User } from '@prisma/client'
+import { Basket, User } from '@prisma/client'
 import { BasketService } from '../basket/basket.service'
 
 @Injectable()
@@ -21,11 +21,13 @@ export class AuthService {
 	EXPIRE_DAY_REFRESH_TOKEN = 1
 	REFRESH_TOKEN_NAME = 'refreshToken'
 
-	constructor(private jwt: JwtService,
-				private userService: UserService,
-				private prisma: PrismaService,
-				private configService: ConfigService,
-				private basketService: BasketService) {}
+	constructor(
+		private jwt: JwtService,
+		private userService: UserService,
+		private prisma: PrismaService,
+		private configService: ConfigService,
+		private basketService: BasketService
+	) {}
 
 	async login(req: Request, dto: AuthDto) {
 		const user: User = await this.validateUser(dto)
@@ -33,7 +35,7 @@ export class AuthService {
 
 		// await this.saveSession(req, user)
 
-		return {user, ...tokens}
+		return { user, ...tokens }
 	}
 
 	async register(dto: AuthDto) {
@@ -44,7 +46,7 @@ export class AuthService {
 		const basket: Basket = await this.basketService.create(user.id)
 		const tokens = this.issueTokens(user)
 
-		return {user, ...tokens}
+		return { user, ...tokens }
 	}
 
 	async getNewTokens(refreshToken: string) {
@@ -56,12 +58,11 @@ export class AuthService {
 
 		const tokens = this.issueTokens(user)
 
-		return {user, ...tokens}
+		return { user, ...tokens }
 	}
 
 	issueTokens(user: any) {
-		const payload = {email: user.email, id: user.id, roles: user.roles}
-
+		const payload = { email: user.email, id: user.id, roles: user.roles }
 
 		const accessToken = this.jwt.sign(payload, {
 			expiresIn: '1h'
@@ -70,16 +71,17 @@ export class AuthService {
 			expiresIn: '7d'
 		})
 
-		return {accessToken, refreshToken}
+		return { accessToken, refreshToken }
 	}
 
 	private async validateUser(dto: AuthDto) {
 		const user: User = await this.userService.getByEmail(dto.email)
 		if (!user) throw new NotFoundException(`Некорректный емайл или пароль`)
-			
+
 		const passwordEqual = await verify(user.password, dto.password)
 
-		if (!user || !passwordEqual) throw new NotFoundException(`Некорректный емайл или пароль`)
+		if (!user || !passwordEqual)
+			throw new NotFoundException(`Некорректный емайл или пароль`)
 
 		return user
 	}
@@ -92,13 +94,13 @@ export class AuthService {
 				data: {
 					email: req.user.email,
 					name: req.user.name,
-					picture: req.user.picture,
+					picture: req.user.picture
 				}
 			})
 		}
 		const tokens = this.issueTokens(user)
 
-		return {user, ...tokens}
+		return { user, ...tokens }
 	}
 
 	addRefreshTokenToResponse(res: Response, refreshToken: string) {
@@ -115,7 +117,7 @@ export class AuthService {
 	}
 
 	removeRefreshTokenFromResponse(res: Response) {
-		res.cookie(this.REFRESH_TOKEN_NAME,'', {
+		res.cookie(this.REFRESH_TOKEN_NAME, '', {
 			httpOnly: true,
 			domain: this.configService.get('SERVER_DOMAIN'),
 			expires: new Date(0),
