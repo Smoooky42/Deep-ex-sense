@@ -7,35 +7,59 @@ on:
   pull_request:
     branches:
       - main
-
+      
 jobs:
   backend:
     name: Backend CI
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: Deep-ex-sense
+
+
     steps:
-      - name: Checkout code
+      - name: Checkout code           #Клонирует код
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Set up Node.js          #Устанавливает Node.js версии 18
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install dependencies    #Устанавливает зависимости проекта
         working-directory: ./server
         run: npm install --legacy-peer-deps
 
-      - name: Generate Prisma Client
+      - name: Set DATABASE_URL environment variable
+        working-directory: ./server
+        run: echo "DATABASE_URL=postgresql://admin:admin@localhost:5432/Deep-ex-sense?schema=public" >> $GITHUB_ENV
+
+      - name: Generate Prisma Client  #Генерирует Prisma Client из файла схемы 
         working-directory: ./server
         run: npx prisma generate
 
-      - name: Run tests
+      - name: Run tests               #Запускает тесты
         working-directory: ./server
         run: npm run test
 
       # - name: Run linter
       #   working-directory: ./backend
       #   run: npm run lint
+
+      - name: Debug Environment       #В случае ошибки выводит переменные окружения и содержимое текущей директории для отладки.
+        if: failure()
+        run: |
+          echo "Environment Variables:"
+          printenv
+          echo "Current Directory Contents:"
+          ls -al
 
   # frontend:
   #   name: Frontend CI
