@@ -15,7 +15,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./server
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Run tests
         working-directory: ./server
