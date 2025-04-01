@@ -7,13 +7,13 @@ on:
   pull_request:
     branches:
       - main
-      
+
 jobs:
   backend:
     name: Backend CI
     runs-on: ubuntu-latest
 
-    services:
+    services: #Необязательно, так как данных из БД мокаются. А вот для е2е тестов уже надо было бы
       postgres:
         image: postgres:latest
         ports:
@@ -23,37 +23,36 @@ jobs:
           POSTGRES_PASSWORD: admin
           POSTGRES_DB: Deep-ex-sense
 
-
     steps:
-      - name: Checkout code           #Клонирует код
+      - name: Checkout code #Клонирует код
         uses: actions/checkout@v3
 
-      - name: Set up Node.js          #Устанавливает Node.js версии 18
+      - name: Set up Node.js #Устанавливает Node.js версии 18
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
-      - name: Install dependencies    #Устанавливает зависимости проекта
+      - name: Install dependencies #Устанавливает зависимости проекта
         working-directory: ./server
         run: npm install --legacy-peer-deps
 
-      - name: Set DATABASE_URL environment variable
+      - name: Set DATABASE_URL environment variable #Добавляет переменную DATABASE_URL в файл окружения $GITHUN_ENV и делает ее доступной для последующих шагах в этом же workflow
         working-directory: ./server
         run: echo "DATABASE_URL=postgresql://admin:admin@localhost:5432/Deep-ex-sense?schema=public" >> $GITHUB_ENV
 
-      - name: Generate Prisma Client  #Генерирует Prisma Client из файла схемы 
+      - name: Generate Prisma Client #Генерирует Prisma Client из файла схемы
         working-directory: ./server
         run: npx prisma generate
 
-      - name: Run tests               #Запускает тесты
+      - name: Run tests #Запускает тесты
         working-directory: ./server
         run: npm run test
 
-      # - name: Run linter
+      # - name: Run linter            #Запускает линтеры
       #   working-directory: ./backend
       #   run: npm run lint
 
-      - name: Debug Environment       #В случае ошибки выводит переменные окружения и содержимое текущей директории для отладки.
+      - name: Debug Environment #В случае ошибки выводит переменные окружения и содержимое текущей директории для отладки
         if: failure()
         run: |
           echo "Environment Variables:"

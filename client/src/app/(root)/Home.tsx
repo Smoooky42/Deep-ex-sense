@@ -14,12 +14,12 @@ interface HomeProps {
 export function Home({ products }: HomeProps) {
 
 	return (
-		<div>	
+		<div>
 			<Fireflies />
 			<MainBanner />
 			<ConcertsBanner />
-			<ShopBanner products={products}/>
-			<Tracks/>
+			<ShopBanner products={products} />
+			<Tracks />
 		</div>
 	)
 }

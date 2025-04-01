@@ -8,6 +8,8 @@ $quantity: 20;
     left: 0;
     width: 100%;
     height: 100%;
+    pointer-events: none; // 🔹 Добавляем, чтобы клики проходили сквозь элемент
+    // z-index: -1; // 🔹 Отправляем на задний план, чтобы элементы оставались интерактивными
 }
 
 .firefly {
@@ -56,8 +58,10 @@ $quantity: 20;
         }
 
         &::after {
-            animation-duration: #{$rotationSpeed}, #{math.random(6000) + 5000ms};
-            animation-delay: 0ms, #{math.random(8000) + 500ms};
+            animation-duration: #{$rotationSpeed},
+            #{math.random(6000) + 5000ms};
+            animation-delay: 0ms,
+            #{math.random(8000) + 500ms};
         }
     }
 
@@ -74,16 +78,21 @@ $quantity: 20;
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
 }
 
 @keyframes flash {
-    0%, 30%, 100% {
+
+    0%,
+    30%,
+    100% {
         opacity: 0;
         box-shadow: 0 0 0vw 0vw yellow;
     }
+
     5% {
         opacity: 1;
         box-shadow: 0 0 2vw 0.4vw yellow;
