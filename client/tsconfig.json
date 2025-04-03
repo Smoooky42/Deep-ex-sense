@@ -13,6 +13,7 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"incremental": true,
+		"noImplicitAny": false, //разрешает неявный тип any
 		"plugins": [
 			{
 				"name": "next"

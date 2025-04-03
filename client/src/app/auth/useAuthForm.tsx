@@ -42,7 +42,7 @@ export function useAuthForm(isReg: boolean) {
             router.push(PUBLIC_URL.home());
             toast.success('Успешная авторизация')
         }
-    }, [result.isSuccess, router]);
+    }, [result.isSuccess, router, form]);
 
     useEffect(() => {
         if (result.isError) {

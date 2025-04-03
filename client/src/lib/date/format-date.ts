@@ -8,6 +8,7 @@ export const formatDate = (dateString: string) => {
 	return `${day}.${month}.${year}`
 }
 
-export const sortByDate = (arr: any) => {
-	return arr.sort((a, b) => new Date(a.date) - new Date(b.date));
-  };
+export const sortByDate = (arr: any[]) => {
+	// "@ts-expect-error"
+	return arr.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+};

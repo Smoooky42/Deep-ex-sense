@@ -26,15 +26,16 @@ export function TrackItem({ track, isActive, isPlaying, onPlayPause }: TrackItem
     function updateDuration() {
       setDuration(audioRef.current!.duration);
     }
-    if (audioRef.current) {
-      audioRef.current.addEventListener('timeupdate', updateCurrentTime);
-      audioRef.current.addEventListener('loadedmetadata', updateDuration);
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      audioElement.addEventListener('timeupdate', updateCurrentTime);
+      audioElement.addEventListener('loadedmetadata', updateDuration);
     }
 
     return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('timeupdate', updateCurrentTime);
-        audioRef.current.removeEventListener('loadedmetadata', updateDuration);
+      if (audioElement) {
+        audioElement.removeEventListener('timeupdate', updateCurrentTime);
+        audioElement.removeEventListener('loadedmetadata', updateDuration);
       }
     };
   }, [audioRef]);

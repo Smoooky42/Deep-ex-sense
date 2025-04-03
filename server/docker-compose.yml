@@ -1,8 +1,8 @@
 services:
-    main:
-        container_name: main
+    server-app:
         build:
             context: .
+            dockerfile: Dockerfile
         env_file:
             - .env
         volumes:
@@ -10,14 +10,13 @@ services:
             - /app/node_modules
         ports:
             - 5000:5000
-            - 9229:9299
         command: npm run start
         depends_on:
             - postgres
             - redis
         restart: always
         networks:
-            - backend
+            - my_network
 
     postgres:
         container_name: postgres
@@ -32,7 +31,7 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data
         networks:
-            - backend
+            - my_network
 
     redis:
         container_name: redis
@@ -44,11 +43,26 @@ services:
         volumes:
             - redis_data:/data
         networks:
-            - backend
+            - my_network
+
+    # next-app:
+    #     container_name: next-app
+    #     build:
+    #         context: ../client
+    #         dockerfile: Dockerfile
+    #     environment:
+    #         - SERVER_URL=http://server-app:5000
+    #     ports:
+    #         # - '80:80' # порт по умолчанию для nginx
+    #         - '3000:3000' # Порт, на котором будет доступно Next-приложение
+    #     depends_on:
+    #         - server-app
+    #     networks:
+    #         - my_network
 
 volumes:
     postgres_data:
     redis_data:
-
 networks:
-    backend:
+    my_network:
+        driver: bridge

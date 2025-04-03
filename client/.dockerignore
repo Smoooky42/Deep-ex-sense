@@ -1,0 +1,15 @@
+/node_modules
+
+# .env
+
+Dockerfile
+.dockerignore
+/.next/
+coverage/
+.git/
+
+README.md
+*.log
+tmp/
+*.temp
+.DS_Store

@@ -15,7 +15,7 @@ export async function generateStaticParams() {
 			"Content-Type": "application/json",
 		},
 		// Следующее нужно для выполнения запроса на серверной стороне:
-		cache: "no-store", // Отключение кэширования для получения свежих данных
+		// cache: "no-store", // Отключение кэширования для получения свежих данных
 	});
 
 	// Обработка ответа
@@ -33,7 +33,7 @@ export async function generateStaticParams() {
 	return paths
 }
 
-async function getProductById(id: string ) {
+async function getProductById(id: string) {
 	try {
 		const response = await fetch(SERVER_URL + API_URL.products(`/${id}`), {
 			method: "GET",
@@ -41,7 +41,7 @@ async function getProductById(id: string ) {
 				"Content-Type": "application/json",
 			},
 			// Следующее нужно для выполнения запроса на серверной стороне:
-			cache: "no-store", // Отключение кэширования для получения свежих данных
+			// cache: "no-store", // Отключение кэширования для получения свежих данных
 		});
 		// Обработка ответа
 		if (!response.ok) {
@@ -55,7 +55,7 @@ async function getProductById(id: string ) {
 	}
 }
 
-export async function generateMetadata({params}: {params: { id: string }}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
 	const { id } = await params
 	const product = await getProductById(id)
 
@@ -77,7 +77,7 @@ export async function generateMetadata({params}: {params: { id: string }}): Prom
 
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
 	const product = await getProductById(id)
 
